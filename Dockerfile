@@ -12,7 +12,6 @@ RUN apk --no-cache add \
         php8-pecl-apcu \
         php8-mysqli \
         php8-pgsql \
-        php8-json \
         php8-openssl \
         php8-curl \
         php8-zlib \
