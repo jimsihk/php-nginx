@@ -10,6 +10,7 @@ RUN apk --no-cache add \
         php8-fpm \
         php8-opcache \
         php8-pecl-apcu \
+        php8-pecl-memcached \
         php8-mysqli \
         php8-pgsql \
         php8-openssl \
@@ -38,6 +39,8 @@ RUN apk --no-cache add \
         # php8-pdo_mysql \
         # php8-pdo_sqlite \
         # php8-bz2 \
+# Set soft link if php does not exist
+    && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/php8 /usr/bin/php; fi \
 # Bring in gettext so we can get `envsubst`, then throw
 # the rest away. To do this, we need to install `gettext`
 # then move `envsubst` out of the way so `gettext` can
