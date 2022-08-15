@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.15
+FROM ${ARCH}alpine:3.16
 
 LABEL Maintainer="Ernesto Serrano <info@ernesto.es>" \
       Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux."
@@ -12,7 +12,6 @@ RUN apk --no-cache add \
         php8-pecl-apcu \
         php8-mysqli \
         php8-pgsql \
-        php8-json \
         php8-openssl \
         php8-curl \
         php8-zlib \
