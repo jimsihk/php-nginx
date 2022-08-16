@@ -10,6 +10,7 @@ RUN apk --no-cache add \
         php8-fpm \
         php8-opcache \
         php8-pecl-apcu \
+        php8-pecl-memcached \
         php8-mysqli \
         php8-pgsql \
         php8-json \
