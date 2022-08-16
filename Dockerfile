@@ -38,6 +38,8 @@ RUN apk --no-cache add \
         # php8-pdo_mysql \
         # php8-pdo_sqlite \
         # php8-bz2 \
+# Create symlink so programs depending on `php` still function
+    && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/php8 /usr/bin/php; fi \
 # Bring in gettext so we can get `envsubst`, then throw
 # the rest away. To do this, we need to install `gettext`
 # then move `envsubst` out of the way so `gettext` can
