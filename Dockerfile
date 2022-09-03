@@ -4,49 +4,59 @@ FROM ${ARCH}alpine:3.16.2
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
 
+ARG PHP_RUNTIME=php8
+ARG PHP_VERSION="=8.0.22-r0"
+ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
+ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
+ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
+ARG NGINX_VERSION="=1.22.0-r1"
+ARG RUNIT_VERSION="=2.1.2-r5"
+ARG CURL_VERSION="=7.83.1-r3"
+ARG GETTEXT_VERSION="=0.21-r2"
+
 # Install packages
 RUN apk --no-cache add \
-        php8 \
-        php8-fpm \
-        php8-opcache \
-        php8-pecl-apcu \
-        php8-pecl-memcached \
-        php8-pecl-redis \
-        php8-mysqli \
-        php8-pgsql \
-        php8-openssl \
-        php8-curl \
-        # php8-zlib \
-        php8-soap \
-        php8-xml \
-        php8-fileinfo \
-        php8-phar \
-        php8-intl \
-        php8-dom \
-        php8-xmlreader \
-        php8-ctype \
-        php8-session \
-        php8-iconv \
-        php8-tokenizer \
-        php8-zip \
-        php8-simplexml \
-        php8-mbstring \
-        php8-gd \
-        nginx \
-        runit \
-        curl \
-        # php8-pdo \
-        # php8-pdo_pgsql \
-        # php8-pdo_mysql \
-        # php8-pdo_sqlite \
-        # php8-bz2 \
+        ${PHP_RUNTIME}${PHP_VERSION} \
+        ${PHP_RUNTIME}-fpm${PHP_VERSION} \
+        ${PHP_RUNTIME}-opcache${PHP_VERSION} \
+        ${PHP_RUNTIME}-pecl-apcu${PHP_PECL_APCU_VERSION} \
+        ${PHP_RUNTIME}-pecl-memcached${PHP_PECL_MEMCACHED_VERSION} \
+        ${PHP_RUNTIME}-pecl-redis${PHP_PECL_REDIS_VERSION} \
+        ${PHP_RUNTIME}-mysqli${PHP_VERSION} \
+        ${PHP_RUNTIME}-pgsql${PHP_VERSION} \
+        ${PHP_RUNTIME}-openssl${PHP_VERSION} \
+        ${PHP_RUNTIME}-curl${PHP_VERSION} \
+        # ${PHP_RUNTIME}-zlib \
+        ${PHP_RUNTIME}-soap${PHP_VERSION} \
+        ${PHP_RUNTIME}-xml${PHP_VERSION} \
+        ${PHP_RUNTIME}-fileinfo${PHP_VERSION} \
+        ${PHP_RUNTIME}-phar${PHP_VERSION} \
+        ${PHP_RUNTIME}-intl${PHP_VERSION} \
+        ${PHP_RUNTIME}-dom${PHP_VERSION} \
+        ${PHP_RUNTIME}-xmlreader${PHP_VERSION} \
+        ${PHP_RUNTIME}-ctype${PHP_VERSION} \
+        ${PHP_RUNTIME}-session${PHP_VERSION} \
+        ${PHP_RUNTIME}-iconv${PHP_VERSION} \
+        ${PHP_RUNTIME}-tokenizer${PHP_VERSION} \
+        ${PHP_RUNTIME}-zip${PHP_VERSION} \
+        ${PHP_RUNTIME}-simplexml${PHP_VERSION} \
+        ${PHP_RUNTIME}-mbstring${PHP_VERSION} \
+        ${PHP_RUNTIME}-gd${PHP_VERSION} \
+        nginx${NGINX_VERSION} \
+        runit${RUNIT_VERSION} \
+        curl${CURL_VERSION} \
+        # ${PHP_RUNTIME}-pdo \
+        # ${PHP_RUNTIME}-pdo_pgsql \
+        # ${PHP_RUNTIME}-pdo_mysql \
+        # ${PHP_RUNTIME}-pdo_sqlite \
+        # ${PHP_RUNTIME}-bz2 \
 # Create symlink so programs depending on `php` still function
-    && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/php8 /usr/bin/php; fi \
+    && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/${PHP_RUNTIME} /usr/bin/php; fi \
 # Bring in gettext so we can get `envsubst`, then throw
 # the rest away. To do this, we need to install `gettext`
 # then move `envsubst` out of the way so `gettext` can
 # be deleted completely, then move `envsubst` back.
-    && apk add --no-cache --virtual .gettext gettext \
+    && apk add --no-cache --virtual .gettext gettext${GETTEXT_VERSION} \
     && mv /usr/bin/envsubst /tmp/ \
     && runDeps="$( \
         scanelf --needed --nobanner /tmp/envsubst \
