@@ -5,17 +5,19 @@ LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
 
 ARG PHP_RUNTIME=php8
-ARG PHP_VERSION="=8.0.22-r0"
+ARG PHP_VERSION="=8.0.23-r0"
 ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
 ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
 ARG NGINX_VERSION="=1.22.0-r1"
 ARG RUNIT_VERSION="=2.1.2-r5"
-ARG CURL_VERSION="=7.83.1-r3"
+ARG CURL_VERSION="=7.85.0-r0"
 ARG GETTEXT_VERSION="=0.21-r2"
 
 # Install packages
-RUN apk --no-cache add \
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main/" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && apk --no-cache add \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
         ${PHP_RUNTIME}-opcache${PHP_VERSION} \
