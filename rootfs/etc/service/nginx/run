@@ -2,7 +2,7 @@
 
 # Replace ENV vars in configuration files
 tmpfile=$(mktemp)
-cat /etc/nginx/nginx.conf | envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" | tee "$tmpfile" > /dev/null
+envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/nginx/nginx.conf > "$tmpfile"
 mv "$tmpfile" /etc/nginx/nginx.conf
 
 # pipe stderr to stdout and run nginx omiting ENV vars to avoid security leaks
