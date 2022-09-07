@@ -25,7 +25,7 @@ shutdown() {
 
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 
-for script in $(find /docker-entrypoint-init.d/ -executable -type f); do
+find /docker-entrypoint-init.d/ -executable -type f -print0 | while IFS= read -r -d '' script; do
 
     echo >&2 "*** Running: $script"
     $script
