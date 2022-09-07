@@ -4,7 +4,7 @@ services:
     image: ${TEST_IMAGE_NAME:-jimsihk/alpine-php-nginx:local}
     build: .
   sut:
-    image: alpine:3
+    image: alpine:20220715
     depends_on:
       - app
     command: /tmp/run_tests.sh
