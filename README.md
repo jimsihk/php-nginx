@@ -3,7 +3,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/jimsihk/alpine-php-nginx.svg)](https://hub.docker.com/r/jimsihk/alpine-php-nginx/)
 ![Docker Image Size](https://img.shields.io/docker/image-size/jimsihk/alpine-php-nginx)
 ![nginx 1.22](https://img.shields.io/badge/nginx-1.22-brightgreen.svg)
-![php 8.0](https://img.shields.io/badge/php-8.0-brightgreen.svg)
+![php 8.0.23](https://img.shields.io/badge/php-8.0.23-brightgreen.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Example PHP-FPM 8.0 & Nginx 1.22 setup for Docker, build on [Alpine Linux](https://www.alpinelinux.org/).
