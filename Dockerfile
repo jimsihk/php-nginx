@@ -4,7 +4,9 @@ FROM ${ARCH}alpine:3.16.2
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
 
-ARG PHP_RUNTIME=php8
+ARG PHP_V=8
+ARG PHP_RUNTIME=php${PHP_V}
+ARG PHP_FPM_RUNTIME=php-fpm${PHP_V}
 ARG PHP_VERSION="=8.0.23-r0"
 ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
@@ -52,8 +54,10 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main/" >> /etc/apk/reposito
         # ${PHP_RUNTIME}-pdo_mysql \
         # ${PHP_RUNTIME}-pdo_sqlite \
         # ${PHP_RUNTIME}-bz2 \
-# Create symlink so programs depending on `php` still function
+# Create symlink so programs depending on `php` and `php-fpm` still function
     && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/${PHP_RUNTIME} /usr/bin/php; fi \
+    && if [ ! -L /etc/php ]; then ln -s /etc/${PHP_RUNTIME} /etc/php; fi \
+    && if [ ! -L /usr/sbin/php-fpm ]; then ln -s /usr/sbin/${PHP_FPM_RUNTIME} /usr/sbin/php-fpm; fi \
 # Bring in gettext so we can get `envsubst`, then throw
 # the rest away. To do this, we need to install `gettext`
 # then move `envsubst` out of the way so `gettext` can
