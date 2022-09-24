@@ -42,7 +42,7 @@ jobs:
         uses: anchore/scan-action@v3
         with:
           image: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
-          acs-report-enable: true
+          output-format: sarif
           fail-build: false
 
       - name: Upload Anchore Scan Report

@@ -79,7 +79,7 @@ jobs:
         id: anchore-scan
         with:
           image: 'docker.io/${{ env.IMAGE_NAME }}:${{ env.TEST_TAG }}'
-          acs-report-enable: true
+          output-format: sarif
           fail-build: false
 
       - name: Upload Anchore Scan Report
