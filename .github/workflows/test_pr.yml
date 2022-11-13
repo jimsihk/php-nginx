@@ -1,0 +1,37 @@
+name: Build and test
+
+on:
+  pull_request:
+    branches: ["dev"]
+
+env:
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and Test
+        run: |
+          export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker compose --file docker-compose.test.yml up --exit-code-from sut --timeout 10 --build
+
+      - name: Run Trivy vulnerability scanner for PR
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: 0
+
+      - name: Run the Anchore scan action for PR
+        uses: anchore/scan-action@v3
+        id: anchore-scan-pr
+        with:
+          image: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          output-format: table
+          fail-build: false
