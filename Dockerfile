@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.16.3
+FROM ${ARCH}alpine:3.17.0
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
