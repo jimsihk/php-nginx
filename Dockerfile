@@ -7,13 +7,21 @@ LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
 ARG PHP_V=8
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
+# renovate: datasource=repology depName=alpine_edge/php8 versioning=loose
 ENV PHP_VERSION="=8.0.25-r0"
+# renovate: datasource=repology depName=alpine_edge/php8-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
+# renovate: datasource=repology depName=alpine_edge/php8-pecl-memcached versioning=loose
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
+# renovate: datasource=repology depName=alpine_edge/php8-pecl-redis versioning=loose
 ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
+# renovate: datasource=repology depName=alpine_edge/nginx versioning=loose
 ARG NGINX_VERSION="=1.22.1-r0"
+# renovate: datasource=repology depName=alpine_3_16/runit versioning=loose
 ARG RUNIT_VERSION="=2.1.2-r5"
+# renovate: datasource=repology depName=alpine_edge/curl versioning=loose
 ARG CURL_VERSION="=7.86.0-r1"
+# renovate: datasource=repology depName=alpine_3_16/gettext versioning=loose
 ARG GETTEXT_VERSION="=0.21-r2"
 
 # Install packages
