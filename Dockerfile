@@ -10,7 +10,7 @@ ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
 # renovate: datasource=repology depName=alpine_edge/php8 versioning=loose
 ENV PHP_VERSION="=8.0.26-r0"
 # renovate: datasource=repology depName=alpine_edge/php8-pecl-apcu versioning=loose
-ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
+ARG PHP_PECL_APCU_VERSION="=5.1.22-r0"
 # renovate: datasource=repology depName=alpine_edge/php8-pecl-memcached versioning=loose
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
 # renovate: datasource=repology depName=alpine_edge/php8-pecl-redis versioning=loose
