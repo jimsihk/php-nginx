@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.16.3
+FROM ${ARCH}alpine:3.17.0
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
@@ -27,6 +27,8 @@ ARG GETTEXT_VERSION="=0.21-r2"
 # Install packages
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main/" >> /etc/apk/repositories \
     && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/main" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/community" >> /etc/apk/repositories \
     && apk --no-cache add \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
