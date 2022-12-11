@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.16.3
+FROM ${ARCH}alpine:3.17.0
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
@@ -17,16 +17,18 @@ ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
 ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
 # renovate: datasource=repology depName=alpine_edge/nginx versioning=loose
 ARG NGINX_VERSION="=1.22.1-r0"
-# renovate: datasource=repology depName=alpine_3_16/runit versioning=loose
-ARG RUNIT_VERSION="=2.1.2-r5"
+# renovate: datasource=repology depName=alpine_3_17/runit versioning=loose
+ARG RUNIT_VERSION="=2.1.2-r6"
 # renovate: datasource=repology depName=alpine_edge/curl versioning=loose
 ARG CURL_VERSION="=7.86.0-r1"
-# renovate: datasource=repology depName=alpine_3_16/gettext versioning=loose
-ARG GETTEXT_VERSION="=0.21-r2"
+# renovate: datasource=repology depName=alpine_3_17/gettext versioning=loose
+ARG GETTEXT_VERSION="=0.21.1-r1"
 
 # Install packages
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main/" >> /etc/apk/repositories \
     && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/main" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/community" >> /etc/apk/repositories \
     && apk --no-cache add \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
