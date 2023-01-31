@@ -82,7 +82,7 @@ jobs:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
