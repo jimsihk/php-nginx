@@ -1,10 +1,8 @@
 name: Nightly Build
 
 on:
-#  schedule:
-#    - cron: '00 18 * * *' #UTC
-  push:
-    branches: ["feature/auto-publish"]
+  schedule:
+    - cron: '00 17 * * *' #UTC
 
 permissions:
   contents: read
