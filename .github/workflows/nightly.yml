@@ -1,0 +1,62 @@
+name: Nightly Build
+
+on:
+#  schedule:
+#    - cron: '00 18 * * *' #UTC
+  push:
+    branches: ["feature/auto-publish"]
+
+permissions:
+  contents: read
+
+env:
+  IMAGE_REGISTRY: ${{ vars.REGISTRY_NIGHTLY }}
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_TAG: nightly
+
+jobs:
+  build-container:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      packages: write # for docker/build-push-action to store image to package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to the Nightly Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Test
+        run: |
+          export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker compose --file docker-compose.test.yml up --exit-code-from sut --timeout 10 --build
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+  scan-nightly-build:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    uses: ./.github/workflows/scan.yml
+    needs: [build-container]
+    with:
+      image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
+
+  tag-and-release:
+    permissions:
+      contents: write # for ncipollo/release-action to create release
+    uses: ./.github/workflows/auto-release.yml
+    needs: [build-container]
+    with:
+      image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly

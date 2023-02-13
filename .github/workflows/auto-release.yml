@@ -1,0 +1,99 @@
+name: Identify changes, tag and release
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  auto-tagging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Load tag history and suggest next tag
+        id: analyze_tag_history
+        uses: anothrNick/github-tag-action@1.61.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DRY_RUN: true
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: ${{ vars.RELEASE_BRANCHES }}
+
+      - name: Set next version
+        id: next_tag_version
+        run: |
+          echo "new_tag=${{ steps.analyze_tag_history.outputs.new_tag }}" >> $GITHUB_OUTPUT
+          echo "previous_tag=${{ steps.analyze_tag_history.outputs.tag }}" >> $GITHUB_OUTPUT
+
+      - name: Get container PHP version
+        id: php_version
+        run: |
+          docker run -i ${{ inputs.image }} php -r 'echo phpversion();' > version.txt
+          # e.g. 8.0.27
+          PHP_V=$(cat version.txt)
+          PHP_MAJOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f1)
+          PHP_MINOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f2)
+          PHP_PATCH=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f3)
+          echo "full=${PHP_V}" >> $GITHUB_OUTPUT
+
+          # format PHP version number to tag format
+          # <major><minor>.<patch (leading zero removed)>.0
+          # e.g. 8.0.27 --> 80.27.0
+          PHP_TAG="$PHP_MAJOR$PHP_MINOR.$PHP_PATCH.0"
+          echo "tag=${PHP_TAG}" >> $GITHUB_OUTPUT
+
+          echo "PHP Major version: ${PHP_MAJOR}"
+          echo "PHP Minor version: ${PHP_MINOR}"
+          echo "PHP Patch version: ${PHP_PATCH}"
+          echo "Container tag: ${PHP_TAG}"
+
+      - name: Determine change
+        id: get_changes
+        run: |
+          echo "[${{ steps.php_version.outputs.tag }}] vs [${{ steps.next_tag_version.outputs.new_tag }}]"
+          if [ -n "${{ steps.next_tag_version.outputs.new_tag }}" ]
+          then
+            # Compare up to minor version
+            PREFIX_PHP_TAG=`echo ${{ steps.php_version.outputs.tag }} | cut -d'.' -f1,2`
+            PREFIX_NEW_TAG=`echo ${{ steps.next_tag_version.outputs.new_tag }} | cut -d'.' -f1,2`
+            if [ "$PREFIX_PHP_TAG" = "$PREFIX_NEW_TAG" ];
+            then
+              # same PHP minor version
+              echo "Use ${{ steps.next_tag_version.outputs.new_tag }}"
+              echo "new_tag=${{ steps.next_tag_version.outputs.new_tag }}" >> $GITHUB_OUTPUT
+            else
+              # PHP minor version changed
+              echo "Use ${{ steps.php_version.outputs.tag }}"
+              echo "new_tag=${{ steps.php_version.outputs.tag }}" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No change is detected"
+            echo "new_tag=${{ steps.next_tag_version.outputs.previous_tag }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate release name
+        id: release_detail
+        run: |
+          R1="${{ steps.php_version.outputs.full }}"
+          R2=`echo "${{ steps.get_changes.outputs.new_tag }}" | cut -d'.' -f3`
+          R_NAME="v$R1-$R2"
+          echo "release_name=$R_NAME" >> $GITHUB_OUTPUT
+          echo "Release name: $R_NAME"
+
+      - name: Tag and create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_changes.outputs.new_tag }}
+          commit: ${{ github.sha }}
+          name: ${{ steps.release_detail.outputs.release_name }}
+          skipIfReleaseExists: true
+          allowUpdates: false
+          generateReleaseNotes: true
