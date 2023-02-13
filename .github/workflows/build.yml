@@ -6,12 +6,13 @@ on:
     branches: ["dev"]
 
 env:
+  IMAGE_REGISTRY: ${{ vars.REGISTRY_PUBLIC }}
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   TEST_TAG: test-build
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,7 +21,7 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          DOCKER_PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64,linux/386,linux/ppc64le,linux/s390x
+          DOCKER_PLATFORMS=${{ vars.CONTAINER_ARCH }}
 
           VERSION=${GITHUB_REF#refs/*/}
           TAGS="${{ env.IMAGE_NAME }}:${VERSION}"
@@ -46,6 +47,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
+          registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 

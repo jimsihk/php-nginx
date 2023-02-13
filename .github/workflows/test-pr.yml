@@ -1,4 +1,4 @@
-name: Build and test
+name: Build and test PR
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  build-and-test-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
