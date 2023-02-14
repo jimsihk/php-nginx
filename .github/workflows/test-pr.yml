@@ -21,7 +21,7 @@ jobs:
           docker compose --file docker-compose.test.yml up --exit-code-from sut --timeout 10 --build
 
       - name: Run Trivy vulnerability scanner for PR
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.9.1
         with:
           image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'

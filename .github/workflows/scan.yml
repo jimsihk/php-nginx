@@ -6,9 +6,13 @@ on:
       image:
         required: true
         type: string
+      gitref:
+        required: true
+        type: string
 
 env:
   IMAGE: ${{ inputs.image }}
+  GITREF: ${{ inputs.gitref }}
 
 jobs:
   scan:
@@ -18,10 +22,15 @@ jobs:
     steps:
       - name: Logging
         run: |
-          echo "Scanning ${{ env.IMAGE }}..."
+          echo "Scanning ${{ env.IMAGE }} of ${{ env.GITREF }}..."
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITREF }}
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.9.1
         with:
           image-ref: ${{ env.IMAGE }}
           format: 'sarif'

@@ -50,6 +50,7 @@ jobs:
     needs: [build-container]
     with:
       image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
+      gitref: ${GITHUB_REF#refs/*/}
 
   tag-and-release:
     permissions:

@@ -6,8 +6,11 @@ on:
     branches: ["dev"]
     paths-ignore:
       - README.md
-      - .github/workflows/update-dockerhub-desc.yml
       - LICENSE
+      - .github/workflows/update-dockerhub-desc.yml
+      - .github/workflows/test-pr.yml
+  release: 
+    types: [released]
 
 env:
   IMAGE_REGISTRY: ${{ vars.REGISTRY_PUBLIC }}
@@ -61,7 +64,7 @@ jobs:
           docker compose --file docker-compose.test.yml up --exit-code-from sut --timeout 10 --build
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.9.1
         with:
           image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ env.TEST_TAG }}'
           format: 'sarif'
