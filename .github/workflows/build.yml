@@ -9,8 +9,6 @@ on:
       - LICENSE
       - .github/workflows/update-dockerhub-desc.yml
       - .github/workflows/test-pr.yml
-  release: 
-    types: [released]
 
 env:
   IMAGE_REGISTRY: ${{ vars.REGISTRY_PUBLIC }}
