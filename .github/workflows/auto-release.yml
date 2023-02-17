@@ -6,6 +6,11 @@ on:
       image:
         required: true
         type: string
+    secrets:
+      RELEASE_BOT_APP_ID:
+        required: true
+      RELEASE_BOT_PRIVATE_KEY:
+        required: true
 
 permissions:
   contents: write
@@ -14,14 +19,23 @@ jobs:
   auto-tagging:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate release token
+        id: generate_release_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_release_token.outputs.token }}
 
       - name: Load tag history and suggest next tag
         id: analyze_tag_history
         uses: anothrNick/github-tag-action@1.61.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_release_token.outputs.token }}
           WITH_V: false
           DRY_RUN: true
           DEFAULT_BUMP: patch
@@ -97,3 +111,4 @@ jobs:
           skipIfReleaseExists: true
           allowUpdates: false
           generateReleaseNotes: true
+          token: ${{ steps.generate_release_token.outputs.token }}
