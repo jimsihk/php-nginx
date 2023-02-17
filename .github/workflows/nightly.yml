@@ -1,8 +1,8 @@
 name: Nightly Build
 
 on:
-  push:
-    branches: ["fix/release-and-push"]
+  schedule:
+    - cron: '00 17 * * *' #UTC
 
 permissions:
   contents: read
