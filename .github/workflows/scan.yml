@@ -9,7 +9,6 @@ on:
 
 env:
   IMAGE: ${{ inputs.image }}
-  GITREF: ${{ inputs.gitref }}
 
 jobs:
   scan:
