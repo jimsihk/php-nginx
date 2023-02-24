@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.17.2
+FROM ${ARCH}alpine:3.16.4
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
@@ -7,7 +7,7 @@ LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
 ARG PHP_V=8
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
-# renovate: datasource=repology depName=alpine_edge/php8 versioning=loose
+# renovate: datasource=repology depName=alpine_3_16/php8 versioning=loose
 ENV PHP_VERSION="=8.0.28-r0"
 # renovate: datasource=repology depName=alpine_3_16/php8-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
@@ -15,21 +15,17 @@ ARG PHP_PECL_APCU_VERSION="=5.1.21-r0"
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
 # renovate: datasource=repology depName=alpine_3_16/php8-pecl-redis versioning=loose
 ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
-# renovate: datasource=repology depName=alpine_edge/nginx versioning=loose
+# renovate: datasource=repology depName=alpine_3_16/nginx versioning=loose
 ARG NGINX_VERSION="=1.22.1-r0"
-# renovate: datasource=repology depName=alpine_3_17/runit versioning=loose
-ARG RUNIT_VERSION="=2.1.2-r6"
-# renovate: datasource=repology depName=alpine_edge/curl versioning=loose
-ARG CURL_VERSION="=7.88.1-r1"
-# renovate: datasource=repology depName=alpine_3_17/gettext versioning=loose
-ARG GETTEXT_VERSION="=0.21.1-r1"
+# renovate: datasource=repology depName=alpine_3_16/runit versioning=loose
+ARG RUNIT_VERSION="=2.1.2-r5"
+# renovate: datasource=repology depName=alpine_3_16/curl versioning=loose
+ARG CURL_VERSION="=7.83.1-r6"
+# renovate: datasource=repology depName=alpine_3_16/gettext versioning=loose
+ARG GETTEXT_VERSION="=0.21-r2"
 
 # Install packages
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main/" >> /etc/apk/repositories \
-    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
-    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/main" >> /etc/apk/repositories \
-    && echo "https://dl-cdn.alpinelinux.org/alpine/v3.16/community" >> /etc/apk/repositories \
-    && apk --no-cache add \
+RUN apk --no-cache add \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
         ${PHP_RUNTIME}-opcache${PHP_VERSION} \
