@@ -52,6 +52,8 @@ RUN apk --no-cache add \
         ${PHP_RUNTIME}-simplexml${PHP_VERSION} \
         ${PHP_RUNTIME}-mbstring${PHP_VERSION} \
         ${PHP_RUNTIME}-gd${PHP_VERSION} \
+        ${PHP_RUNTIME}-sodium${PHP_VERSION} \
+        ${PHP_RUNTIME}-exif${PHP_VERSION} \
         nginx${NGINX_VERSION} \
         runit${RUNIT_VERSION} \
         curl${CURL_VERSION} \
