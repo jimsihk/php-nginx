@@ -14,7 +14,7 @@ Repository: https://github.com/jimsihk/alpine-php-nginx
 
 * Built on the lightweight and secure Alpine Linux distribution
 * Very small Docker image size (+/-25MB)
-* Uses PHP 8.0 for better performance, lower cpu usage & memory footprint
+* Uses PHP 8.1 for better performance, lower cpu usage & memory footprint
 * Multi-arch support: 386, amd64, arm/v7, arm64, ppc64le, s390x
 * Optimized for 100 concurrent users
 * Optimized to only use resources when there's traffic (by using PHP-FPM's ondemand PM)
