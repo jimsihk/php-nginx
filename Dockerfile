@@ -64,7 +64,7 @@ RUN apk --no-cache add \
         # ${PHP_RUNTIME}-bz2 \
 # Create symlink so programs depending on `php` and `php-fpm` still function
     && if [ ! -L /usr/bin/php ]; then ln -s /usr/bin/${PHP_RUNTIME} /usr/bin/php; fi \
-    && if [ ! -L /etc/php ]; then ln -s /etc/${PHP_RUNTIME} /etc/php; fi \
+    && if [ ! -L /etc/php ]; then mv /etc/${PHP_RUNTIME} /etc/php && ln -s /etc/php /etc/${PHP_RUNTIME}; fi \
     && if [ ! -L /usr/sbin/php-fpm ]; then ln -s /usr/sbin/${PHP_FPM_RUNTIME} /usr/sbin/php-fpm; fi \
 # Bring in gettext so we can get `envsubst`, then throw
 # the rest away. To do this, we need to install `gettext`
