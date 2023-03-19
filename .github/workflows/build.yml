@@ -88,7 +88,21 @@ jobs:
         with:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
 
+      - name: Get changed container files
+        id: changed-files
+        uses: tj-actions/changed-files@v35.7.2
+        with:
+          files: |
+            rootfs/**
+            Dockerfile
+
+      - name: List changed container files
+        run: |
+          echo "Any container files changed? ${{ steps.changed-files.outputs.any_changed }}"
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+
       - name: Build and push
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/build-push-action@v4
         with:
           context: .

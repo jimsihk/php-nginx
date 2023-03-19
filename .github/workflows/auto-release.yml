@@ -102,7 +102,35 @@ jobs:
           echo "release_name=$R_NAME" >> $GITHUB_OUTPUT
           echo "Release name: $R_NAME"
 
+      - name: Get commit SHA of last tag and last commit
+        id: get_commit_sha
+        run: |
+          LAST_TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
+          LAST_TAG_COMMIT=`git rev-list -n 1 $LAST_TAG`
+          echo "previous_tag=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
+          echo "Last tag at $LAST_TAG with SHA $LAST_TAG_COMMIT"
+          #Also get last commit before using tj-actions/changed-files as it assumed the commit hash must be different or error will be returned
+          LAST_COMMIT=$(git rev-parse HEAD)
+          echo "last_commit=$LAST_COMMIT" >> $GITHUB_OUTPUT
+          echo "Last commit SHA is $LAST_COMMIT"
+
+      - name: Get changed container files
+        if: steps.get_commit_sha.outputs.previous_tag != steps.get_commit_sha.outputs.last_commit
+        id: changed-files
+        uses: tj-actions/changed-files@v35.7.2
+        with:
+          base_sha: ${{ steps.get_commit_sha.outputs.previous_tag }}
+          files: |
+            rootfs/**
+            Dockerfile
+
+      - name: List changed files since last tag
+        run: |
+          echo "Any files changed? ${{ steps.changed-files.outputs.any_changed }}"
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+
       - name: Tag and create a GitHub release
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.get_changes.outputs.new_tag }}
