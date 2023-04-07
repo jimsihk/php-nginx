@@ -33,7 +33,7 @@ jobs:
       - name: Build and Test
         run: |
           export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker compose --file docker-compose.test.yml up --exit-code-from sut --timeout 10 --build
+          docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
 
       - name: Build and push
         uses: docker/build-push-action@v4
