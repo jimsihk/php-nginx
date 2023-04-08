@@ -1,4 +1,15 @@
 ARG ARCH=
+FROM ${ARCH}alpine:3.17.3 as build
+
+# renovate: datasource=repology depName=alpine_3_13/gnu-libiconv versioning=loose
+ARG GNU_LIBICONV_VERSION="=1.15-r3"
+
+RUN apk --no-cache add \
+# Workaround for using gnu-iconv instead of iconv in PHP on Alpine
+# https://github.com/docker-library/php/issues/240#issuecomment-876464325
+      --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ \
+        gnu-libiconv${GNU_LIBICONV_VERSION}
+
 FROM ${ARCH}alpine:3.17.3
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
@@ -86,10 +97,15 @@ RUN apk --no-cache add \
     && rm -rf /var/cache/apk/* \
 # Remove default server definition
     && rm /etc/nginx/http.d/default.conf \
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
+# Make sure files/folders needed by the processes are accessible when they run under the nobody user
     && chown -R nobody.nobody /run \
     && chown -R nobody.nobody /var/lib/nginx \
     && chown -R nobody.nobody /var/log/nginx
+
+# Workaround for using gnu-iconv instead of iconv in PHP on Alpine
+# https://github.com/docker-library/php/issues/240#issuecomment-876464325
+COPY --from=build /usr/lib/preloadable_libiconv.so /usr/lib/preloadable_libiconv.so
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 # Add configuration files
 COPY --chown=nobody rootfs/ /
