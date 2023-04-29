@@ -23,6 +23,10 @@ Repository: https://github.com/jimsihk/alpine-php-nginx
 * The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
 
+## Multiple Container Registry
+The images are available on multiple registries:
+- DockerHub: https://hub.docker.com/r/jimsihk/alpine-php-nginx
+- Quay.io: https://quay.io/repository/jimsihk/alpine-php-nginx
 
 ## Usage
 
