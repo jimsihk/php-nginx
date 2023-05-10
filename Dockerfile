@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.17.3 as build
+FROM ${ARCH}alpine:3.18.0 as build
 
 # renovate: datasource=repology depName=alpine_3_13/gnu-libiconv versioning=loose
 ARG GNU_LIBICONV_VERSION="=1.15-r3"
@@ -10,7 +10,7 @@ RUN apk --no-cache add \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ \
         gnu-libiconv${GNU_LIBICONV_VERSION}
 
-FROM ${ARCH}alpine:3.17.3
+FROM ${ARCH}alpine:3.18.0
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
@@ -18,22 +18,22 @@ LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
 ARG PHP_V=81
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
-# renovate: datasource=repology depName=alpine_3_17/php81 versioning=loose
-ENV PHP_VERSION="=8.1.18-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-apcu versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php81 versioning=loose
+ENV PHP_VERSION="=8.1.18-r2"
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.22-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-memcached versioning=loose
-ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-redis versioning=loose
-ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
-# renovate: datasource=repology depName=alpine_3_17/nginx versioning=loose
-ARG NGINX_VERSION="=1.22.1-r0"
-# renovate: datasource=repology depName=alpine_3_17/runit versioning=loose
-ARG RUNIT_VERSION="=2.1.2-r6"
-# renovate: datasource=repology depName=alpine_3_17/curl versioning=loose
-ARG CURL_VERSION="=8.0.1-r0"
-# renovate: datasource=repology depName=alpine_3_17/gettext versioning=loose
-ARG GETTEXT_VERSION="=0.21.1-r1"
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-memcached versioning=loose
+ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r2"
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-redis versioning=loose
+ARG PHP_PECL_REDIS_VERSION="=5.3.7-r1"
+# renovate: datasource=repology depName=alpine_3_18/nginx versioning=loose
+ARG NGINX_VERSION="=1.24.0-r3"
+# renovate: datasource=repology depName=alpine_3_18/runit versioning=loose
+ARG RUNIT_VERSION="=2.1.2-r7"
+# renovate: datasource=repology depName=alpine_3_18/curl versioning=loose
+ARG CURL_VERSION="=8.0.1-r2"
+# renovate: datasource=repology depName=alpine_3_18/gettext versioning=loose
+ARG GETTEXT_VERSION="=0.21.1-r5"
 
 # Install packages
 RUN apk --no-cache add \
