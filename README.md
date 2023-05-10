@@ -32,13 +32,13 @@ The images are available on multiple registries:
 
 Start the Docker container:
 
-    docker run -p 80:8080 jimsihk/alpine-php-nginx
+    docker run -p 80:8080 quay,io/jimsihk/alpine-php-nginx
 
 See the PHP info on http://localhost, or the static html page on http://localhost/test.html
 
 Or mount your own code to be served by PHP-FPM & Nginx
 
-    docker run -p 80:8080 -v ~/my-codebase:/var/www/html jimsihk/alpine-php-nginx
+    docker run -p 80:8080 -v ~/my-codebase:/var/www/html quay.io/jimsihk/alpine-php-nginx
 
 
 ## Adding additional daemons
@@ -82,15 +82,15 @@ If you want to extend or customize that you can do so by mounting a configuratio
 
 Nginx configuration:
 
-    docker run -v "`pwd`/nginx-server.conf:/etc/nginx/conf.d/server.conf" jimsihk/alpine-php-nginx
+    docker run -v "`pwd`/nginx-server.conf:/etc/nginx/conf.d/server.conf" quay.io/jimsihk/alpine-php-nginx
 
 PHP configuration:
 
-    docker run -v "`pwd`/php-setting.ini:/etc/php8/conf.d/settings.ini" jimsihk/alpine-php-nginx
+    docker run -v "`pwd`/php-setting.ini:/etc/php8/conf.d/settings.ini" quay.io/jimsihk/alpine-php-nginx
 
 PHP-FPM configuration:
 
-    docker run -v "`pwd`/php-fpm-settings.conf:/etc/php8/php-fpm.d/server.conf" jimsihk/alpine-php-nginx
+    docker run -v "`pwd`/php-fpm-settings.conf:/etc/php8/php-fpm.d/server.conf" quay.io/jimsihk/alpine-php-nginx
 
 _Note; Because `-v` requires an absolute path I've added `pwd` in the example to return the absolute path to the current directory_
 
@@ -122,7 +122,7 @@ _Note; Because `-v` requires an absolute path I've added `pwd` in the example to
 If you need [Composer](https://getcomposer.org/) in your project, here's an easy way to add it.
 
 ```dockerfile
-FROM jimsihk/alpine-php-nginx:latest
+FROM quay.io/jimsihk/alpine-php-nginx:latest
 USER root
 # Install composer from the official image
 RUN apk add --no-cache composer
@@ -150,6 +150,6 @@ RUN composer install \
 
 # continue stage build with the desired image and copy the source including the
 # dependencies downloaded by composer
-FROM jimsihk/alpine-php-nginx
+FROM quay.io/jimsihk/alpine-php-nginx
 COPY --chown=nginx --from=composer /app /var/www/html
 ```
