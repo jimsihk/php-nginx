@@ -18,21 +18,21 @@ LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
 ARG PHP_V=81
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
-# renovate: datasource=repology depName=alpine_3_17/php81 versioning=loose
-ENV PHP_VERSION="=8.1.18-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-apcu versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php81 versioning=loose
+ENV PHP_VERSION="=8.1.18-r2"
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.22-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-memcached versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-memcached versioning=loose
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
-# renovate: datasource=repology depName=alpine_3_17/php81-pecl-redis versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php81-pecl-redis versioning=loose
 ARG PHP_PECL_REDIS_VERSION="=5.3.7-r0"
-# renovate: datasource=repology depName=alpine_3_17/nginx versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/nginx versioning=loose
 ARG NGINX_VERSION="=1.22.1-r0"
-# renovate: datasource=repology depName=alpine_3_17/runit versioning=loose
-ARG RUNIT_VERSION="=2.1.2-r6"
-# renovate: datasource=repology depName=alpine_3_17/curl versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/runit versioning=loose
+ARG RUNIT_VERSION="=2.1.2-r7"
+# renovate: datasource=repology depName=alpine_3_18/curl versioning=loose
 ARG CURL_VERSION="=8.0.1-r0"
-# renovate: datasource=repology depName=alpine_3_17/gettext versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/gettext versioning=loose
 ARG GETTEXT_VERSION="=0.21.1-r1"
 
 # Install packages
