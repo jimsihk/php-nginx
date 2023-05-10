@@ -33,7 +33,7 @@ ARG RUNIT_VERSION="=2.1.2-r7"
 # renovate: datasource=repology depName=alpine_3_18/curl versioning=loose
 ARG CURL_VERSION="=8.0.1-r2"
 # renovate: datasource=repology depName=alpine_3_18/gettext versioning=loose
-ARG GETTEXT_VERSION="=0.21.1-r1"
+ARG GETTEXT_VERSION="=0.21.1-r5"
 
 # Install packages
 RUN apk --no-cache add \
