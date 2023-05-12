@@ -15,10 +15,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build and Test
+      - name: Try build and Test
         run: |
           export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
+
+      - name: Try build multi-arch
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          platforms: ${{ vars.CONTAINER_ARCH }}
+          provenance: false
 
       - name: Run Trivy vulnerability scanner for PR
         uses: aquasecurity/trivy-action@0.10.0
