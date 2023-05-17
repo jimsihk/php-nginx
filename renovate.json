@@ -6,6 +6,15 @@
   "forkProcessing": "enabled",
   "packageRules": [
     {
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "excludePackageNames": ["alpine"]
+    },
+    {
+      "matchPackageNames": ["alpine"],
       "matchUpdateTypes": ["patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
