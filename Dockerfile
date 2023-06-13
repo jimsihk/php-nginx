@@ -10,7 +10,7 @@ RUN apk --no-cache add \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ \
         gnu-libiconv${GNU_LIBICONV_VERSION}
 
-FROM ${ARCH}alpine:3.18.0
+FROM ${ARCH}php:8.1.20-fpm-alpine3.18
 
 LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
       Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
@@ -37,8 +37,8 @@ ARG GETTEXT_VERSION="=0.21.1-r7"
 
 # Install packages
 RUN apk --no-cache add \
-        ${PHP_RUNTIME}${PHP_VERSION} \
-        ${PHP_RUNTIME}-fpm${PHP_VERSION} \
+#        ${PHP_RUNTIME}${PHP_VERSION} \
+#        ${PHP_RUNTIME}-fpm${PHP_VERSION} \
         ${PHP_RUNTIME}-opcache${PHP_VERSION} \
         ${PHP_RUNTIME}-pecl-apcu${PHP_PECL_APCU_VERSION} \
         ${PHP_RUNTIME}-pecl-memcached${PHP_PECL_MEMCACHED_VERSION} \
@@ -57,7 +57,7 @@ RUN apk --no-cache add \
         ${PHP_RUNTIME}-xmlreader${PHP_VERSION} \
         ${PHP_RUNTIME}-ctype${PHP_VERSION} \
         ${PHP_RUNTIME}-session${PHP_VERSION} \
-        ${PHP_RUNTIME}-iconv${PHP_VERSION} \
+#        ${PHP_RUNTIME}-iconv${PHP_VERSION} \
         ${PHP_RUNTIME}-tokenizer${PHP_VERSION} \
         ${PHP_RUNTIME}-zip${PHP_VERSION} \
         ${PHP_RUNTIME}-simplexml${PHP_VERSION} \
@@ -104,8 +104,8 @@ RUN apk --no-cache add \
 
 # Workaround for using gnu-iconv instead of iconv in PHP on Alpine
 # https://github.com/docker-library/php/issues/240#issuecomment-876464325
-COPY --from=build /usr/lib/preloadable_libiconv.so /usr/lib/preloadable_libiconv.so
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
+#COPY --from=build /usr/lib/preloadable_libiconv.so /usr/lib/preloadable_libiconv.so
+#ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 # Add configuration files
 COPY --chown=nobody rootfs/ /
