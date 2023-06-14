@@ -75,7 +75,7 @@ jobs:
           docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.11.0
+        uses: aquasecurity/trivy-action@0.11.2
         with:
           image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ env.TEST_TAG }}'
           format: 'sarif'
