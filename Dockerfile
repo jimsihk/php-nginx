@@ -12,19 +12,22 @@ RUN apk --no-cache add \
 
 FROM ${ARCH}alpine:3.18.4
 
-LABEL Maintainer="99048231+jimsihk@users.noreply.github.com" \
-      Description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux."
+LABEL org.opencontainers.image.title="alpine-php-nginx" \
+      org.opencontainers.image.description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux." \
+      org.opencontainers.image.url="https://github.com/jimsihk/alpine-php-nginx" \
+      org.opencontainers.image.source="https://github.com/jimsihk/alpine-php-nginx" \
+      org.opencontainers.image.documentation="https://github.com/jimsihk/alpine-php-nginx"
 
-ARG PHP_V=81
+ARG PHP_V=82
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
-# renovate: datasource=repology depName=alpine_3_18/php81 versioning=loose
-ENV PHP_VERSION="=8.1.23-r0"
-# renovate: datasource=repology depName=alpine_3_18/php81-pecl-apcu versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php82 versioning=loose
+ENV PHP_VERSION="=8.2.10-r0"
+# renovate: datasource=repology depName=alpine_3_18/php82-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.22-r0"
-# renovate: datasource=repology depName=alpine_3_18/php81-pecl-memcached versioning=loose
-ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r2"
-# renovate: datasource=repology depName=alpine_3_18/php81-pecl-redis versioning=loose
+# renovate: datasource=repology depName=alpine_3_18/php82-pecl-memcached versioning=loose
+ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r1"
+# renovate: datasource=repology depName=alpine_3_18/php82-pecl-redis versioning=loose
 ARG PHP_PECL_REDIS_VERSION="=6.0.1-r0"
 # renovate: datasource=repology depName=alpine_3_18/nginx versioning=loose
 ARG NGINX_VERSION="=1.24.0-r6"
