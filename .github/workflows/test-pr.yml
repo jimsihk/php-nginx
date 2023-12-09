@@ -41,7 +41,7 @@ jobs:
           provenance: false
 
       - name: Run Trivy vulnerability scanner for PR
-        uses: aquasecurity/trivy-action@0.15.0
+        uses: aquasecurity/trivy-action@0.16.0
         with:
           image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
