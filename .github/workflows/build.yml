@@ -103,7 +103,7 @@ jobs:
 
       - name: Get changed container files
         id: changed-files
-        uses: tj-actions/changed-files@v40.2.1
+        uses: tj-actions/changed-files@v40.2.2
         with:
           files: |
             rootfs/**
