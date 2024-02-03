@@ -32,7 +32,7 @@ The images are available on multiple registries:
 
 Start the Docker container:
 
-    docker run -p 80:8080 quay,io/jimsihk/alpine-php-nginx
+    docker run -p 80:8080 quay.io/jimsihk/alpine-php-nginx
 
 See the PHP info on http://localhost, or the static html page on http://localhost/test.html
 
