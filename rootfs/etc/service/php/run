@@ -1,14 +1,5 @@
 #!/bin/sh -e
 
-# Replace ENV vars in configuration files
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom.ini > "$tmpfile"
-mv "$tmpfile" /etc/php/conf.d/custom.ini
-
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/php-fpm.d/www.conf > "$tmpfile"
-mv "$tmpfile" /etc/php/php-fpm.d/www.conf
-
 # pipe stderr to stdout and run php-fpm
 exec 2>&1
 exec php-fpm -F
