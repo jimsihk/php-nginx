@@ -23,10 +23,25 @@ shutdown() {
   exit
 }
 
+# Replace ENV vars in NGINX configuration files
+tmpfile=$(mktemp)
+envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/nginx/nginx.conf > "$tmpfile"
+mv "$tmpfile" /etc/nginx/nginx.conf
+
+# Replace ENV vars in PHP configuration files
+tmpfile=$(mktemp)
+envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom.ini > "$tmpfile"
+mv "$tmpfile" /etc/php/conf.d/custom.ini
+
+tmpfile=$(mktemp)
+envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/php-fpm.d/www.conf > "$tmpfile"
+mv "$tmpfile" /etc/php/php-fpm.d/www.conf
+
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 
-find /docker-entrypoint-init.d/ -executable -type f -print0 | while IFS= read -r -d '' script; do
-
+tmpfile=$(mktemp)
+find /docker-entrypoint-init.d/ -executable -type f > "$tmpfile"
+sort "$tmpfile" | while IFS= read -r script; do
     echo >&2 "*** Running: $script"
     $script
     retval=$?
@@ -35,8 +50,8 @@ find /docker-entrypoint-init.d/ -executable -type f -print0 | while IFS= read -r
         echo >&2 "*** Failed with return value: $?"
         exit $retval
     fi
-
 done
+rm "$tmpfile"
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
 echo "Starting runit..."

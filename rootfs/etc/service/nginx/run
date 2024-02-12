@@ -1,10 +1,5 @@
 #!/bin/sh -e
 
-# Replace ENV vars in configuration files
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/nginx/nginx.conf > "$tmpfile"
-mv "$tmpfile" /etc/nginx/nginx.conf
-
 # pipe stderr to stdout and run nginx omiting ENV vars to avoid security leaks
 exec 2>&1
 exec env - PATH=$PATH nginx -g 'daemon off;'
