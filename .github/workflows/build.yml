@@ -75,7 +75,7 @@ jobs:
           docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.17.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'docker.io/${{ env.IMAGE_NAME }}:${{ env.TEST_TAG }}'
           format: 'sarif'
@@ -103,7 +103,7 @@ jobs:
 
       - name: Get changed container files
         id: changed-files
-        uses: tj-actions/changed-files@v42.0.2
+        uses: tj-actions/changed-files@v42
         with:
           files: |
             rootfs/**
