@@ -1,13 +1,13 @@
-# Docker PHP-FPM 8.3 & Nginx 1.24 on Alpine Linux
+# Docker PHP-FPM 8.3 & Nginx 1.26 on Alpine Linux
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/jimsihk/alpine-php-nginx.svg)](https://hub.docker.com/r/jimsihk/alpine-php-nginx/)
 ![Docker Image Size](https://img.shields.io/docker/image-size/jimsihk/alpine-php-nginx)
-![nginx 1.24](https://img.shields.io/badge/nginx-1.24-brightgreen.svg)
+![nginx 1.26](https://img.shields.io/badge/nginx-1.26-brightgreen.svg)
 ![php 8.3](https://img.shields.io/badge/php-8.3-brightgreen.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Renovate](https://img.shields.io/badge/renovate-enabled-yellow.svg)](https://app.renovatebot.com/dashboard)
 
-Example PHP-FPM 8.3 & Nginx 1.24 setup for Docker, build on [Alpine Linux](https://www.alpinelinux.org/).
+Example PHP-FPM 8.3 & Nginx 1.26 setup for Docker, build on [Alpine Linux](https://www.alpinelinux.org/).
 The image is only +/- 25MB large.
 
 Repository: https://github.com/jimsihk/alpine-php-nginx
