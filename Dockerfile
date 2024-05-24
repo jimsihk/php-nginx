@@ -21,21 +21,21 @@ LABEL org.opencontainers.image.title="alpine-php-nginx" \
 ARG PHP_V=83
 ENV PHP_RUNTIME=php${PHP_V}
 ENV PHP_FPM_RUNTIME=php-fpm${PHP_V}
-# renovate: datasource=repology depName=alpine_3_19/php83 versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/php83 versioning=loose
 ENV PHP_VERSION="=8.3.7-r0"
-# renovate: datasource=repology depName=alpine_3_19/php83-pecl-apcu versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/php83-pecl-apcu versioning=loose
 ARG PHP_PECL_APCU_VERSION="=5.1.23-r0"
-# renovate: datasource=repology depName=alpine_3_19/php83-pecl-memcached versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/php83-pecl-memcached versioning=loose
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
-# renovate: datasource=repology depName=alpine_3_19/php83-pecl-redis versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/php83-pecl-redis versioning=loose
 ARG PHP_PECL_REDIS_VERSION="=6.0.2-r0"
-# renovate: datasource=repology depName=alpine_3_19/nginx versioning=loose
-ARG NGINX_VERSION="=1.24.0-r16"
-# renovate: datasource=repology depName=alpine_3_19/runit versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/nginx versioning=loose
+ARG NGINX_VERSION="=1.26.0-r1"
+# renovate: datasource=repology depName=alpine_3_20/runit versioning=loose
 ARG RUNIT_VERSION="=2.1.2-r7"
-# renovate: datasource=repology depName=alpine_3_19/curl versioning=loose
-ARG CURL_VERSION="=8.5.0-r0"
-# renovate: datasource=repology depName=alpine_3_19/gettext versioning=loose
+# renovate: datasource=repology depName=alpine_3_20/curl versioning=loose
+ARG CURL_VERSION="=8.7.1-r0"
+# renovate: datasource=repology depName=alpine_3_20/gettext versioning=loose
 ARG GETTEXT_VERSION="=0.22.3-r0"
 
 # Install packages
