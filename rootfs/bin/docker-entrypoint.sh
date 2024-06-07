@@ -34,6 +34,10 @@ envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom.ini >
 mv "$tmpfile" /etc/php/conf.d/custom.ini
 
 tmpfile=$(mktemp)
+envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom-opcache-jit.ini > "$tmpfile"
+mv "$tmpfile" /etc/php/conf.d/custom-opcache-jit.ini
+
+tmpfile=$(mktemp)
 envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/php-fpm.d/www.conf > "$tmpfile"
 mv "$tmpfile" /etc/php/php-fpm.d/www.conf
 
