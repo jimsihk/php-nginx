@@ -94,7 +94,7 @@ PHP-FPM configuration:
 
 _Note; Because `-v` requires an absolute path I've added `pwd` in the example to return the absolute path to the current directory_
 
-##Environment variables
+## Environment variables
 
 You can define the next environment variables to change values from NGINX and PHP
 
