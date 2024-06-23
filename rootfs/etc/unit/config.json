@@ -1,0 +1,45 @@
+{
+  "listeners": {
+    "*:8080": {
+      "pass": "routes"
+    }
+  },
+  "access_log" : {
+    "path": "/dev/stdout"
+  },
+  "routes": [
+    {
+      "match": {
+        "uri": [
+          "*.php",
+          "*.php/*"
+        ]
+      },
+      "action": {
+        "pass": "applications/webapp/direct"
+      }
+    },
+    {
+      "action": {
+        "share": "/var/www/html$uri",
+        "fallback": {
+          "pass": "applications/webapp/index"
+        }
+      }
+    }
+  ],
+  "applications": {
+    "webapp": {
+      "type": "php",
+      "targets": {
+        "direct": {
+          "root": "/var/www/html/"
+        },
+        "index": {
+          "root": "/var/www/html/",
+          "script": "index.php"
+        }
+      }
+    }
+  }
+}

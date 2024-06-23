@@ -1,0 +1,105 @@
+#!/bin/sh -e
+
+# Take reference from: https://github.com/thresheek/unit/blob/master/pkg/docker/docker-entrypoint.sh
+
+WAITLOOPS=5
+SLEEPSEC=1
+
+curl_put()
+{
+    RET=$(curl -s -w '%{http_code}' --retry 3 --retry-delay 5 -X PUT --data-binary @$1 --unix-socket /var/run/control.unit.sock http://localhost/$2)
+    RET_BODY=$(echo "$RET" | sed '$ s/...$//')
+    RET_STATUS=$(echo "$RET" | tail -c 4)
+    if [ "$RET_STATUS" -ne "200" ]; then
+        echo "Error: HTTP response status code is '$RET_STATUS'"
+        echo "$RET_BODY"
+        return 1
+    else
+        echo "OK: HTTP response status code is '$RET_STATUS'"
+        echo "$RET_BODY"
+    fi
+    return 0
+}
+
+if find "/var/lib/unit/" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+    echo "/var/lib/unit/ is not empty, skipping initial configuration..."
+else
+    echo "Launching Unit daemon to perform initial configuration..."
+    unitd --log /dev/stdout --control unix:/var/run/control.unit.sock
+
+    for i in $(seq $WAITLOOPS); do
+        if [ ! -S /var/run/control.unit.sock ]; then
+            echo "Waiting for control socket to be created..."
+            sleep $SLEEPSEC
+        else
+            break
+        fi
+    done
+    # even when the control socket exists, it does not mean unit has finished initialisation
+    # this curl call will get a reply once unit is fully launched
+    curl -s -X GET --unix-socket /var/run/control.unit.sock http://localhost/
+
+    if find "/etc/unit/" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+        echo "/etc/unit/ is not empty, applying initial configuration..."
+
+        echo "Looking for certificate bundles in /etc/unit/..."
+        tmpfile=$(mktemp)
+        find /etc/unit/ -type f -name "*.pem" > "$tmpfile"
+        sort "$tmpfile" | while IFS= read -r f; do
+            echo "Uploading certificates bundle: $f"
+            curl_put $f "certificates/$(basename "$f" .pem)"
+        done
+
+        echo "Looking for JavaScript modules in /etc/unit/..."
+        tmpfile=$(mktemp)
+        find /etc/unit/ -type f -name "*.js" > "$tmpfile"
+        sort "$tmpfile" | while IFS= read -r f; do
+            echo "Uploading JavaScript module: $f"
+            curl_put $f "js_modules/$(basename "$f" .js)"
+        done
+
+        echo "Looking for configuration snippets in /etc/unit/..."
+        tmpfile=$(mktemp)
+        find /etc/unit/ -type f -name "*.json" > "$tmpfile"
+        sort "$tmpfile" | while IFS= read -r f; do
+            echo "Applying configuration $f";
+            curl_put "$f" "config"
+        done
+
+        echo "Looking for shell scripts in /etc/unit/..."
+        tmpfile=$(mktemp)
+        find /etc/unit/ -executable -type f -name "*.sh" > "$tmpfile"
+        sort "$tmpfile" | while IFS= read -r f; do
+            echo "Launching $f";
+            "$f"
+        done
+
+        # warn on filetypes we don't know what to do with
+        find /etc/unit/ -type f -not -name "*.sh" -not -name "*.json" -not -name "*.pem" -not -name "*.js" > "$tmpfile"
+        sort "$tmpfile" | while IFS= read -r f; do
+            echo "Ignoring $f";
+        done        
+    fi
+
+    echo "Stopping Unit daemon after initial configuration..."
+    kill -TERM "$(cat /var/run/unit.pid)"
+
+    for i in $(seq $WAITLOOPS); do
+        if [ -S /var/run/control.unit.sock ]; then
+            echo "Waiting for control socket to be removed..."
+            sleep $SLEEPSEC
+        else
+            break
+        fi
+    done
+    if [ -S /var/run/control.unit.sock ]; then
+        kill -KILL "$(cat /var/run/unit.pid)"
+        rm -f /var/run/control.unit.sock
+    fi
+
+    echo
+    echo "Unit initial configuration complete; ready for start up..."
+    echo
+fi
+
+unitd --no-daemon --log /dev/stdout
