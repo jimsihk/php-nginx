@@ -93,6 +93,7 @@ else
         fi
     done
     if [ -S /var/run/control.unit.sock ]; then
+        echo "Force removing control socket..."
         kill -KILL "$(cat /var/run/unit.pid)"
         rm -f /var/run/control.unit.sock
     fi

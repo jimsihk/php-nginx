@@ -11,19 +11,29 @@
     {
       "match": {
         "uri": [
+          "/"
+        ]
+      },
+      "action": {
+        "pass": "applications/webapp"
+      }
+    },
+    {
+      "match": {
+        "uri": [
           "*.php",
           "*.php/*"
         ]
       },
       "action": {
-        "pass": "applications/webapp/direct"
+        "pass": "applications/webapp"
       }
     },
     {
       "action": {
         "share": "/var/www/html$uri",
         "fallback": {
-          "pass": "applications/webapp/index"
+          "pass": "applications/webapp"
         }
       }
     }
@@ -31,15 +41,7 @@
   "applications": {
     "webapp": {
       "type": "php",
-      "targets": {
-        "direct": {
-          "root": "/var/www/html/"
-        },
-        "index": {
-          "root": "/var/www/html/",
-          "script": "index.php"
-        }
-      }
+      "root": "/var/www/html/"
     }
   }
 }
