@@ -34,7 +34,7 @@ ARG NGINX_VERSION="=1.26.1-r0"
 # renovate: datasource=repology depName=alpine_3_20/runit versioning=loose
 ARG RUNIT_VERSION="=2.1.2-r7"
 # renovate: datasource=repology depName=alpine_3_20/curl versioning=loose
-ARG CURL_VERSION="=8.7.1-r0"
+ARG CURL_VERSION="=8.8.0-r0"
 # renovate: datasource=repology depName=alpine_3_20/gettext versioning=loose
 ARG GETTEXT_VERSION="=0.22.5-r0"
 
