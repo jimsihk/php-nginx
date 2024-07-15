@@ -89,7 +89,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run the Anchore scan action
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v4
         id: anchore-scan
         with:
           image: 'docker.io/${{ env.IMAGE_NAME }}:${{ env.TEST_TAG }}'

@@ -36,7 +36,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run the Anchore scan action itself with GitHub Advanced Security code scanning integration enabled
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v4
         with:
           image: ${{ env.IMAGE }}
           output-format: sarif
