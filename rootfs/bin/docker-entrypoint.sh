@@ -71,6 +71,11 @@ for _srv in /etc/service/*; do
   sv status "$(basename "$_srv")"
 done
 
+# If there are additional arguments, execute them
+if [ $# -gt 0 ]; then
+    exec "$@"
+fi
+
 # catch shutdown signals
 trap shutdown SIGTERM SIGHUP SIGQUIT SIGINT
 wait $RUNSVDIR
