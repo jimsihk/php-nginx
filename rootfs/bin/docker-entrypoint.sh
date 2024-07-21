@@ -24,12 +24,7 @@ shutdown() {
 }
 
 # Replace ENV vars in configuration files
-CUSTOM_CONFIG_LIST="/etc/nginx/nginx.conf \
-                    /etc/php/conf.d/custom.ini \
-                    /etc/php/conf.d/custom-opcache-jit.ini \
-                    /etc/php/php-fpm.d/www.conf"
-
-for _configini in $CUSTOM_CONFIG_LIST; do
+for _configini in $envsubst_config_list; do
   if [ -f "$_configini" ]
   then
     echo "Setting up $_configini..."
