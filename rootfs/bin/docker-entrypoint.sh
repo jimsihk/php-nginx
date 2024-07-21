@@ -23,23 +23,16 @@ shutdown() {
   exit
 }
 
-# Replace ENV vars in NGINX configuration files
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/nginx/nginx.conf > "$tmpfile"
-mv "$tmpfile" /etc/nginx/nginx.conf
-
-# Replace ENV vars in PHP configuration files
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom.ini > "$tmpfile"
-mv "$tmpfile" /etc/php/conf.d/custom.ini
-
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/conf.d/custom-opcache-jit.ini > "$tmpfile"
-mv "$tmpfile" /etc/php/conf.d/custom-opcache-jit.ini
-
-tmpfile=$(mktemp)
-envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < /etc/php/php-fpm.d/www.conf > "$tmpfile"
-mv "$tmpfile" /etc/php/php-fpm.d/www.conf
+# Replace ENV vars in configuration files
+for _configini in $envsubst_config_list; do
+  if [ -f "$_configini" ]
+  then
+    echo "Setting up $_configini..."
+    tmpfile=$(mktemp)
+    envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" < "$_configini" > "$tmpfile"
+    mv "$tmpfile" "$_configini"
+  fi
+done
 
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 

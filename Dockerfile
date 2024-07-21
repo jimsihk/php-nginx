@@ -138,6 +138,12 @@ ENV client_max_body_size=2M \
     opcache_interned_strings_buffer=16 \
     opcache_max_accelerated_files=15000
 
+# List of config files that will be updated with environment variables using envsubst
+ENV envsubst_config_list="/etc/nginx/nginx.conf \
+                          /etc/php/conf.d/custom.ini \
+                          /etc/php/conf.d/custom-opcache-jit.ini \
+                          /etc/php/php-fpm.d/www.conf"
+
 # Expose the port nginx is reachable on
 EXPOSE 8080
 
