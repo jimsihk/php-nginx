@@ -61,3 +61,18 @@ jobs:
     secrets:
       RELEASE_BOT_APP_ID: ${{ secrets.RELEASE_BOT_APP_ID }}
       RELEASE_BOT_PRIVATE_KEY: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+  # Prevent accidental deletion by not using dynamic Action variables
+  housekeep-nightly-containers:
+    permissions:
+      packages: write
+    needs: [scan-nightly-build]
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/delete-package-versions@v5
+        with:
+          owner: 'jimsihk'
+          package-name: 'alpine-php-nginx'
+          package-type: 'container'
+          delete-only-untagged-versions: 'true'
+        
