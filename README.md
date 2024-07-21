@@ -94,7 +94,7 @@ PHP-FPM configuration:
 
 _Note; Because `-v` requires an absolute path I've added `pwd` in the example to return the absolute path to the current directory_
 
-Alternatively, you can also extend the image with your own configuration files at any location and optionally appending the paths at environment variable `envsubst_config_list`. The environment variables in these files will be updated at container start. The default list consists of below files:
+Since v8.3.9-1 (83.9.1), you can also extend the image with your own configuration files at any location and optionally appending the paths at environment variable `envsubst_config_list`. The environment variables in these files will be updated at container start. The default list consists of below files:
 ```
 /etc/nginx/nginx.conf
 /etc/php/conf.d/custom.ini
