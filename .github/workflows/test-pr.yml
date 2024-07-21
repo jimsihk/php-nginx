@@ -3,6 +3,9 @@ name: Build and test PR
 on:
   pull_request:
     branches: ["dev"]
+    paths-ignore:
+      - README.md
+      - LICENSE
 
 env:
   # github.repository as <account>/<repo>
