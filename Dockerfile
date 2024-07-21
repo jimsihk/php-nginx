@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.20.1 as build
+FROM ${ARCH}alpine:3.20.1 AS build
 
 # renovate: datasource=repology depName=alpine_3_13/gnu-libiconv versioning=loose
 ARG GNU_LIBICONV_VERSION="=1.15-r3"
@@ -108,7 +108,7 @@ RUN apk --no-cache add \
 # Workaround for using gnu-iconv instead of iconv in PHP on Alpine
 # https://github.com/docker-library/php/issues/240#issuecomment-876464325
 COPY --from=build /usr/lib/preloadable_libiconv.so /usr/lib/preloadable_libiconv.so
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
+ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
 # Add configuration files
 COPY --chown=nobody rootfs/ /
