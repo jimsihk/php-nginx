@@ -52,7 +52,7 @@ jobs:
         run: |
           docker run -i ${{ inputs.image }} php -r 'echo phpversion();' > version.txt
           # e.g. 8.0.27
-          PHP_V=$(cat version.txt)
+          PHP_V=$(tail -1 version.txt)
           PHP_MAJOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f1)
           PHP_MINOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f2)
           PHP_PATCH=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f3)
