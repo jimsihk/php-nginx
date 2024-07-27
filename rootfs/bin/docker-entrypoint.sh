@@ -48,7 +48,8 @@ sort "$tmpfile" | while IFS= read -r script; do
         break
     fi
 done
-if [ $? -ne 0 ]; then
+echo $?
+if [ $retval -ne 0 ]; then
     echo "*** Exit with $retval"
     exit $retval
 fi
