@@ -38,16 +38,16 @@ echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 
 tmpfile=$(mktemp)
 find /docker-entrypoint-init.d/ -executable -type f > "$tmpfile"
-sort "$tmpfile" | while IFS= read -r script; do
+while IFS= read -r script; do
     echo >&2 "*** Running: $script"
     $script
     retval=$?
     if [ $retval != 0 ];
     then
-        echo >&2 "*** Failed with return value: $?"
+        echo >&2 "*** Failed with return value: $retval"
         exit $retval
     fi
-done
+done < <(sort "$tmpfile")
 rm "$tmpfile"
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
