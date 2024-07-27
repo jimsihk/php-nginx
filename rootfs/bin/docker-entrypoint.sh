@@ -44,7 +44,7 @@ sort "$tmpfile" | while IFS= read -r script; do
     retval=$?
     if [ $retval != 0 ];
     then
-        echo >&2 "*** Failed with return value: $?"
+        echo >&2 "*** Failed with return value: $retval"
         exit $retval
     fi
 done
