@@ -45,9 +45,13 @@ sort "$tmpfile" | while IFS= read -r script; do
     if [ $retval != 0 ];
     then
         echo >&2 "*** Failed with return value: $retval"
-        exit $retval
+        break
     fi
 done
+if [ $? -ne 0 ]; then
+    echo "*** Exit with $retval"
+    exit $retval
+fi
 rm "$tmpfile"
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
