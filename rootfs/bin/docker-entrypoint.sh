@@ -47,7 +47,7 @@ while IFS= read -r script; do
     then
         echo >&2 "*** Failed with return value: $rc"
         retval=$rc
-        break
+        exit $retval
     fi
 done < <(sort "$tmpfile")
 echo $?
