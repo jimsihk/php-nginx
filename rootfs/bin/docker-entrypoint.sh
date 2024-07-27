@@ -50,6 +50,7 @@ sort "$tmpfile" | while IFS= read -r script; do
     fi
 done
 echo $?
+echo $retval
 if [ $retval -ne 0 ]; then
     echo "*** Exit with $retval"
     exit $retval
