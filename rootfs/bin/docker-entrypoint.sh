@@ -48,8 +48,6 @@ while IFS= read -r script; do
         exit $retval
     fi
 done < <(sort "$tmpfile")
-echo $?
-echo "retval=$retval"
 rm "$tmpfile"
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
