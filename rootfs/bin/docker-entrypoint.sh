@@ -37,7 +37,7 @@ done
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 
 tmpfile=$(mktemp)
-find /docker-entrypoint-init.d/ -executable -type f > "$tmpfile"
+find /docker-entrypoint-init.d/ -executable -type f | sort > "$tmpfile"
 while IFS= read -r script; do
     echo >&2 "*** Running: $script"
     $script
