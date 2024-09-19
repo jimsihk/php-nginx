@@ -35,10 +35,7 @@ for _configini in $envsubst_config_list; do
 done
 
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
-
-tmpfile=$(mktemp)
-find /docker-entrypoint-init.d/ -executable -type f | sort > "$tmpfile"
-while IFS= read -r script; do
+for script in $(find /docker-entrypoint-init.d/ -executable -type f | sort); do
     echo >&2 "*** Running: $script"
     $script
     retval=$?
@@ -47,8 +44,7 @@ while IFS= read -r script; do
         echo >&2 "*** Failed with return value: $retval"
         exit $retval
     fi
-done < <(sort "$tmpfile")
-rm "$tmpfile"
+done
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
 echo "Starting runit..."
