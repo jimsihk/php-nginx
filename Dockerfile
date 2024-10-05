@@ -28,7 +28,7 @@ ARG PHP_PECL_APCU_VERSION="=5.1.23-r0"
 # renovate: datasource=repology depName=alpine_3_20/php83-pecl-memcached versioning=loose
 ARG PHP_PECL_MEMCACHED_VERSION="=3.2.0-r0"
 # renovate: datasource=repology depName=alpine_3_20/php83-pecl-redis versioning=loose
-ARG PHP_PECL_REDIS_VERSION="=6.0.2-r0"
+ARG PHP_PECL_REDIS_VERSION="=6.1.0-r0"
 # renovate: datasource=repology depName=alpine_3_20/nginx versioning=loose
 ARG NGINX_VERSION="=1.26.2-r0"
 # renovate: datasource=repology depName=alpine_3_20/runit versioning=loose
