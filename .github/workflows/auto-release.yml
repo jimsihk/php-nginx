@@ -138,8 +138,8 @@ jobs:
 
       - name: List difference in installed alpine packages
         run: |
-          docker run -i --entrypoint whoami ${{ env.IMAGE_NAME }} apk list --installed > nightly.txt
-          docker run -i --entrypoint whoami quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} apk list --installed > latest_tag.txt
+          docker run -i --entrypoint sleep ${{ env.IMAGE_NAME }} apk list --installed > nightly.txt
+          docker run -i --entrypoint sleep quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} apk list --installed > latest_tag.txt
           
           diff latest_tag.txt nightly.txt
 
