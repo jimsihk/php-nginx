@@ -17,6 +17,10 @@ on:
 permissions:
   contents: write
 
+env:
+  #IMAGE_NAME: ${{ inputs.image }}
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
+
 jobs:
   auto-tagging:
     runs-on: ubuntu-latest
@@ -52,7 +56,7 @@ jobs:
       - name: Get container PHP version
         id: php_version
         run: |
-          docker run -i ${{ inputs.image }} php -r 'echo phpversion();' > version.txt
+          docker run -i ${{ env.IMAGE_NAME }} php -r 'echo phpversion();' > version.txt
           # e.g. 8.0.27
           PHP_V=$(tail -1 version.txt)
           PHP_MAJOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f1)
@@ -130,6 +134,13 @@ jobs:
         run: |
           echo "Any files changed? ${{ steps.changed-files.outputs.any_changed }}"
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+
+      - name: List difference in installed alpine packages
+        run: |
+          docker run -i ${{ env.IMAGE_NAME }} apk list --installed > nightly.txt
+          docker run -i quay.io/${{ github.repository }}:${{ steps.next_tag_version.outputs.previous_tag }} apk list --installed > latest.txt
+
+          diff latest.txt nightly.txt
 
       #- name: Tag and create a GitHub release
       #  if: steps.changed-files.outputs.any_changed == 'true'
