@@ -11,6 +11,8 @@ on:
         required: true
       RELEASE_BOT_PRIVATE_KEY:
         required: true
+  push:
+    branches: ["feature/dependency-check"]
 
 permissions:
   contents: write
@@ -129,14 +131,14 @@ jobs:
           echo "Any files changed? ${{ steps.changed-files.outputs.any_changed }}"
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
-      - name: Tag and create a GitHub release
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.get_changes.outputs.new_tag }}
-          commit: ${{ github.sha }}
-          name: ${{ steps.release_detail.outputs.release_name }}
-          skipIfReleaseExists: true
-          allowUpdates: false
-          generateReleaseNotes: true
-          token: ${{ steps.generate_release_token.outputs.token }}
+      #- name: Tag and create a GitHub release
+      #  if: steps.changed-files.outputs.any_changed == 'true'
+      #  uses: ncipollo/release-action@v1
+      #  with:
+      #    tag: ${{ steps.get_changes.outputs.new_tag }}
+      #    commit: ${{ github.sha }}
+      #    name: ${{ steps.release_detail.outputs.release_name }}
+      #    skipIfReleaseExists: true
+      #    allowUpdates: false
+      #    generateReleaseNotes: true
+      #    token: ${{ steps.generate_release_token.outputs.token }}
