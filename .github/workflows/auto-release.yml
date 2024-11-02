@@ -113,7 +113,8 @@ jobs:
         run: |
           LAST_TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
           LAST_TAG_COMMIT=`git rev-list -n 1 $LAST_TAG`
-          echo "previous_tag=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
+          echo "previous_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+          echo "previous_tag_commit=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
           echo "Last tag at $LAST_TAG with SHA $LAST_TAG_COMMIT"
           #Also get last commit before using tj-actions/changed-files as it assumed the commit hash must be different or error will be returned
           LAST_COMMIT=$(git rev-parse HEAD)
@@ -121,11 +122,11 @@ jobs:
           echo "Last commit SHA is $LAST_COMMIT"
 
       - name: Get changed container files
-        if: steps.get_commit_sha.outputs.previous_tag != steps.get_commit_sha.outputs.last_commit
+        if: steps.get_commit_sha.outputs.previous_tag_commit != steps.get_commit_sha.outputs.last_commit
         id: changed-files
         uses: tj-actions/changed-files@v45
         with:
-          base_sha: ${{ steps.get_commit_sha.outputs.previous_tag }}
+          base_sha: ${{ steps.get_commit_sha.outputs.previous_tag_commit }}
           files: |
             rootfs/**
             Dockerfile
@@ -138,9 +139,9 @@ jobs:
       - name: List difference in installed alpine packages
         run: |
           docker run -i ${{ env.IMAGE_NAME }} apk list --installed > nightly.txt
-          docker run -i quay.io/${{ github.repository }}:${{ steps.next_tag_version.outputs.previous_tag }} apk list --installed > latest.txt
+          docker run -i quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} apk list --installed > latest_tag.txt
 
-          diff latest.txt nightly.txt
+          diff latest_tag.txt nightly.txt
 
       #- name: Tag and create a GitHub release
       #  if: steps.changed-files.outputs.any_changed == 'true'
