@@ -138,12 +138,8 @@ jobs:
 
       - name: List difference in installed alpine packages
         run: |
-          docker run -i ${{ env.IMAGE_NAME }} echo "=====" && apk list --installed > nightly_raw.txt
-          docker run -i quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} echo "=====" && apk list --installed > latest_tag_raw.txt
-
-          # Properly remove the lines from entry point before compare
-          sed '1,/=====/d' nightly_raw.txt > nightly.txt
-          sed '1,/=====/d' latest_tag_raw.txt > latest_tag.txt
+          docker run -i ${{ env.IMAGE_NAME }} --entrypoint apk list --installed > nightly.txt
+          docker run -i quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} --entrypoint apk list --installed > latest_tag.txt
           
           diff latest_tag.txt nightly.txt
 
