@@ -146,12 +146,11 @@ jobs:
           #cp nightly.txt latest_tag.txt
           
           COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
-          echo "Count=$COUNT"
 
           if [ "$COUNT" -gt 0 ]
           then
             echo "any_changed=true" >> $GITHUB_OUTPUT
-            diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | cut -d' ' -f1 > diff.txt
+            diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | cut -d' ' -f1 | sed 's/^+//' > diff.txt
             echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
           else
             echo "any_changed=false" >> $GITHUB_OUTPUT
