@@ -11,15 +11,15 @@ on:
         required: true
       RELEASE_BOT_PRIVATE_KEY:
         required: true
-  push:
-    branches: ["feature/dependency-check"]
+  #push:
+  #  branches: ["feature/dependency-check"]
 
 permissions:
   contents: write
 
 env:
-  #IMAGE_NAME: ${{ inputs.image }}
-  IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
+  IMAGE_NAME: ${{ inputs.image }}
+  #IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
 
 jobs:
   auto-tagging:
@@ -194,4 +194,4 @@ jobs:
           generateReleaseNotes: true
           token: ${{ steps.generate_release_token.outputs.token }}
           body: ${{ steps.new-release.outputs.release_body }}
-          draft: true
+          #draft: true
