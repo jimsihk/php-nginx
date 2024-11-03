@@ -170,7 +170,7 @@ jobs:
             echo "required=true" >> $GITHUB_OUTPUT
             if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
             then
-              temp_release_body="Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+              temp_release_body="- Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
               echo "release_body=$temp_release_body" >> $GITHUB_OUTPUT
             fi
           else
