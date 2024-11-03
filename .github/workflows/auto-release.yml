@@ -11,9 +11,15 @@ on:
         required: true
       RELEASE_BOT_PRIVATE_KEY:
         required: true
+  #push:
+  #  branches: ["feature/dependency-check"]
 
 permissions:
   contents: write
+
+env:
+  IMAGE_NAME: ${{ inputs.image }}
+  #IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
 
 jobs:
   auto-tagging:
@@ -50,7 +56,7 @@ jobs:
       - name: Get container PHP version
         id: php_version
         run: |
-          docker run -i ${{ inputs.image }} php -r 'echo phpversion();' > version.txt
+          docker run -i ${{ env.IMAGE_NAME }} php -r 'echo phpversion();' > version.txt
           # e.g. 8.0.27
           PHP_V=$(tail -1 version.txt)
           PHP_MAJOR=$(echo $PHP_V | sed 's/ //g' | cut -d'.' -f1)
@@ -107,7 +113,8 @@ jobs:
         run: |
           LAST_TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
           LAST_TAG_COMMIT=`git rev-list -n 1 $LAST_TAG`
-          echo "previous_tag=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
+          echo "previous_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+          echo "previous_tag_commit=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
           echo "Last tag at $LAST_TAG with SHA $LAST_TAG_COMMIT"
           #Also get last commit before using tj-actions/changed-files as it assumed the commit hash must be different or error will be returned
           LAST_COMMIT=$(git rev-parse HEAD)
@@ -115,11 +122,11 @@ jobs:
           echo "Last commit SHA is $LAST_COMMIT"
 
       - name: Get changed container files
-        if: steps.get_commit_sha.outputs.previous_tag != steps.get_commit_sha.outputs.last_commit
+        if: steps.get_commit_sha.outputs.previous_tag_commit != steps.get_commit_sha.outputs.last_commit
         id: changed-files
         uses: tj-actions/changed-files@v45
         with:
-          base_sha: ${{ steps.get_commit_sha.outputs.previous_tag }}
+          base_sha: ${{ steps.get_commit_sha.outputs.previous_tag_commit }}
           files: |
             rootfs/**
             Dockerfile
@@ -129,8 +136,54 @@ jobs:
           echo "Any files changed? ${{ steps.changed-files.outputs.any_changed }}"
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
+      - name: Get changed installed alpine packages
+        id: changed-deps
+        run: |
+          docker run -i --entrypoint apk ${{ env.IMAGE_NAME }} list --installed > nightly.txt
+          docker run -i --entrypoint apk quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} list --installed > latest_tag.txt
+
+          # for debug
+          #cp nightly.txt latest_tag.txt
+
+          # Cannot directly use grep as last step since it will exit as 1 when not found values
+          COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
+
+          if [ "$COUNT" -gt 0 ]
+          then
+            echo "any_changed=true" >> $GITHUB_OUTPUT
+            diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | cut -d' ' -f1 | sed 's/^+//' > diff.txt
+            echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
+          else
+            echo "any_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: List changed alpine packages
+        run: |
+          echo "Any package changed? ${{ steps.changed-deps.outputs.any_changed }}"
+          echo "Changed packages: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+
+      - name: Control release
+        id: new-release
+        run: |
+          if [ ${{ steps.changed-files.outputs.any_changed }} = 'true' ] || [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
+          then
+            echo "required=true" >> $GITHUB_OUTPUT
+            if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
+            then
+              temp_release_body="- Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+              echo "release_body=$temp_release_body" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "required=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Debug release
+        run: |
+          echo "Required? ${{ steps.new-release.outputs.required }}"
+          echo "Body: ${{ steps.new-release.outputs.release_body }}"
+
       - name: Tag and create a GitHub release
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.new-release.outputs.required == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.get_changes.outputs.new_tag }}
@@ -140,3 +193,5 @@ jobs:
           allowUpdates: false
           generateReleaseNotes: true
           token: ${{ steps.generate_release_token.outputs.token }}
+          body: ${{ steps.new-release.outputs.release_body }}
+          #draft: true
