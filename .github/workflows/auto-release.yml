@@ -141,9 +141,12 @@ jobs:
           docker run -i --entrypoint apk ${{ env.IMAGE_NAME }} list --installed > nightly.txt
           docker run -i --entrypoint apk quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} list --installed > latest_tag.txt
           
-          #diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+
+          diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ > diff.txt
+          echo "Difference:"
+          cat diff.txt
+
           cp nightly.txt nightly2.txt
-          diff -u nightly2.txt nightly.txt | sed '1,/@@/d' | grep ^+
+          diff -u nightly2.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l
 
           echo "END"
 
