@@ -144,7 +144,8 @@ jobs:
 
           # for debug
           #cp nightly.txt latest_tag.txt
-          
+
+          # Cannot directly use grep as last step since it will exit as 1 when not found values
           COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
 
           if [ "$COUNT" -gt 0 ]
@@ -160,6 +161,25 @@ jobs:
         run: |
           echo "Any package changed? ${{ steps.changed-deps.outputs.any_changed }}"
           echo "Changed packages: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+
+      - name: Control release
+        id: new-release
+        run: |
+          if [ ${{ steps.changed-files.outputs.any_changed }} = 'true' ] || [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
+          then
+            echo "required=true" >> $GITHUB_OUTPUT
+            if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
+            then
+              echo "release_body=${{ steps.changed-deps.outputs.all_changed_deps }}" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "required=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Debug release
+        run: |
+          echo "Required? ${{ steps.new-release.outputs.required }}"
+          echo "Body: ${{ steps.new-release.outputs.release_body }}"
 
       #- name: Tag and create a GitHub release
       #  if: steps.changed-files.outputs.any_changed == 'true'
