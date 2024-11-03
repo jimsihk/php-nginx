@@ -143,7 +143,7 @@ jobs:
           docker run -i --entrypoint apk quay.io/${{ github.repository }}:${{ steps.get_commit_sha.outputs.previous_tag }} list --installed > latest_tag.txt
 
           # for debug
-          cp nightly.txt latest_tag.txt
+          #cp nightly.txt latest_tag.txt
 
           # Cannot directly use grep as last step since it will exit as 1 when not found values
           COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
@@ -170,7 +170,8 @@ jobs:
             echo "required=true" >> $GITHUB_OUTPUT
             if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
             then
-              echo "release_body=${{ steps.changed-deps.outputs.all_changed_deps }}" >> $GITHUB_OUTPUT
+              temp_release_body="Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+              echo "release_body=$temp_release_body" >> $GITHUB_OUTPUT
             fi
           else
             echo "required=false" >> $GITHUB_OUTPUT
@@ -181,14 +182,16 @@ jobs:
           echo "Required? ${{ steps.new-release.outputs.required }}"
           echo "Body: ${{ steps.new-release.outputs.release_body }}"
 
-      #- name: Tag and create a GitHub release
-      #  if: steps.changed-files.outputs.any_changed == 'true'
-      #  uses: ncipollo/release-action@v1
-      #  with:
-      #    tag: ${{ steps.get_changes.outputs.new_tag }}
-      #    commit: ${{ github.sha }}
-      #    name: ${{ steps.release_detail.outputs.release_name }}
-      #    skipIfReleaseExists: true
-      #    allowUpdates: false
-      #    generateReleaseNotes: true
-      #    token: ${{ steps.generate_release_token.outputs.token }}
+      - name: Tag and create a GitHub release
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_changes.outputs.new_tag }}
+          commit: ${{ github.sha }}
+          name: ${{ steps.release_detail.outputs.release_name }}
+          skipIfReleaseExists: true
+          allowUpdates: false
+          generateReleaseNotes: true
+          token: ${{ steps.generate_release_token.outputs.token }}
+          body: ${{ steps.new-release.outputs.release_body }}
+          draft: true
