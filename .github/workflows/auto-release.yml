@@ -144,7 +144,7 @@ jobs:
 
           cp nightly.txt latest_tag.txt #for debug
           
-          COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)
+          COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
           echo "Count=$COUNT"
 
           if [ "$COUNT" -gt 0 ]
