@@ -183,7 +183,7 @@ jobs:
           echo "Body: ${{ steps.new-release.outputs.release_body }}"
 
       - name: Tag and create a GitHub release
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.new-release.outputs.required == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.get_changes.outputs.new_tag }}
