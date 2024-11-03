@@ -148,7 +148,7 @@ jobs:
           echo "Difference:"
           cat diff.txt
           wc -l diff.txt
-          if [ "$( wc -l diff.txt )" -gt 0 ]
+          if [ "$( cat diff.txt | wc -l )" -gt 0 ]
           then
             echo "any_changed=true" >> $GITHUB_OUTPUT
             echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
