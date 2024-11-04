@@ -117,7 +117,7 @@ jobs:
           echo "Any container files changed? ${{ steps.changed-files.outputs.any_changed }}"
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
-          if [ "${{ steps.changed-files.outputs.any_changed }} = 'true' ] || [[ $GITHUB_REF == refs/tags/* ]]
+          if [ "${{ steps.changed-files.outputs.any_changed }}" = 'true' ] || [[ $GITHUB_REF == refs/tags/* ]]
           then
             echo "required=true" >> $GITHUB_OUTPUT
           else
