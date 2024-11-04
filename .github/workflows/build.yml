@@ -111,13 +111,21 @@ jobs:
             rootfs/**
             Dockerfile
 
-      - name: List changed container files
+      - name: Determine release
+        id: new-release
         run: |
           echo "Any container files changed? ${{ steps.changed-files.outputs.any_changed }}"
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
+          if [ "${{ steps.changed-files.outputs.any_changed }}" = 'true' ] || [[ $GITHUB_REF == refs/tags/* ]]
+          then
+            echo "required=true" >> $GITHUB_OUTPUT
+          else
+            echo "required=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and push
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.new-release.outputs.required == 'true'
         uses: docker/build-push-action@v6
         with:
           context: .
