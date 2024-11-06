@@ -37,10 +37,13 @@ ARG RUNIT_VERSION="=2.1.2-r7"
 ARG CURL_VERSION="=8.10.1-r0"
 # renovate: datasource=repology depName=alpine_3_20/gettext versioning=loose
 ARG GETTEXT_VERSION="=0.22.5-r0"
+# renovate: datasource=repology depName=alpine_3_20/libssl3 versioning=loose
+ARG LIBSSL3_VERSION="=3.3.2-r1"
+
 
 # Install packages
 RUN apk --no-cache add \
-        libssl3=3.3.2-r1 \
+        libssl3${LIBSSL3_VERSION} \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
         ${PHP_RUNTIME}-opcache${PHP_VERSION} \
