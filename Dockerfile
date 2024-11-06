@@ -40,6 +40,7 @@ ARG GETTEXT_VERSION="=0.22.5-r0"
 
 # Install packages
 RUN apk --no-cache add \
+        libssl3=3.3.2-r1 \
         ${PHP_RUNTIME}${PHP_VERSION} \
         ${PHP_RUNTIME}-fpm${PHP_VERSION} \
         ${PHP_RUNTIME}-opcache${PHP_VERSION} \
