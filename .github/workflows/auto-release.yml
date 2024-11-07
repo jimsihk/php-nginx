@@ -18,8 +18,8 @@ permissions:
   contents: write
 
 env:
-  IMAGE_NAME: ${{ inputs.image }}
-  #IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
+  #IMAGE_NAME: ${{ inputs.image }}
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
 
 jobs:
   auto-tagging:
