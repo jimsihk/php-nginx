@@ -11,8 +11,8 @@ on:
         required: true
       RELEASE_BOT_PRIVATE_KEY:
         required: true
-  #push:
-  #  branches: ["feature/dependency-check"]
+  push:
+    branches: ["fix/auto-release"]
 
 permissions:
   contents: write
