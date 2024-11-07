@@ -147,11 +147,13 @@ jobs:
 
           # Cannot directly use grep as last step since it will exit as 1 when not found values
           COUNT="$(diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | wc -l)"
+          echo "Number of differences: $COUNT"
 
           if [ "$COUNT" -gt 0 ]
           then
             echo "any_changed=true" >> $GITHUB_OUTPUT
             diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | cut -d' ' -f1 | sed 's/^+//' > diff.txt
+            cat diff.txt
             echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
           else
             echo "any_changed=false" >> $GITHUB_OUTPUT
