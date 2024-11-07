@@ -11,15 +11,15 @@ on:
         required: true
       RELEASE_BOT_PRIVATE_KEY:
         required: true
-  push:
-    branches: ["fix/auto-release"]
+  #push:
+  #  branches: ["fix/auto-release"]
 
 permissions:
   contents: write
 
 env:
-  #IMAGE_NAME: ${{ inputs.image }}
-  IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
+  IMAGE_NAME: ${{ inputs.image }}
+  #IMAGE_NAME: ghcr.io/${{ github.repository }}:nightly
 
 jobs:
   auto-tagging:
@@ -154,7 +154,7 @@ jobs:
             echo "any_changed=true" >> $GITHUB_OUTPUT
             diff -u latest_tag.txt nightly.txt | sed '1,/@@/d' | grep ^+ | cut -d' ' -f1 | sed 's/^+//' > diff.txt
             cat diff.txt
-            echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
+            #echo "all_changed_deps=`cat diff.txt`" >> $GITHUB_OUTPUT
           else
             echo "any_changed=false" >> $GITHUB_OUTPUT
           fi
@@ -162,7 +162,7 @@ jobs:
       - name: List changed alpine packages
         run: |
           echo "Any package changed? ${{ steps.changed-deps.outputs.any_changed }}"
-          echo "Changed packages: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+          #echo "Changed packages: ${{ steps.changed-deps.outputs.all_changed_deps }}"
 
       - name: Control release
         id: new-release
@@ -170,19 +170,19 @@ jobs:
           if [ ${{ steps.changed-files.outputs.any_changed }} = 'true' ] || [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
           then
             echo "required=true" >> $GITHUB_OUTPUT
-            if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
-            then
-              temp_release_body="- Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
-              echo "release_body=$temp_release_body" >> $GITHUB_OUTPUT
-            fi
+            #if [ ${{ steps.changed-files.outputs.any_changed }} != 'true' ] && [ ${{ steps.changed-deps.outputs.any_changed }} = 'true' ]
+            #then
+            #  temp_release_body="- Update dependency: ${{ steps.changed-deps.outputs.all_changed_deps }}"
+            #  echo "release_body=$temp_release_body" >> $GITHUB_OUTPUT
+            #fi
           else
             echo "required=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Debug release
+      - name: Debug release control
         run: |
           echo "Required? ${{ steps.new-release.outputs.required }}"
-          echo "Body: ${{ steps.new-release.outputs.release_body }}"
+          #echo "Body: ${{ steps.new-release.outputs.release_body }}"
 
       - name: Tag and create a GitHub release
         if: steps.new-release.outputs.required == 'true'
@@ -195,5 +195,5 @@ jobs:
           allowUpdates: false
           generateReleaseNotes: true
           token: ${{ steps.generate_release_token.outputs.token }}
-          body: ${{ steps.new-release.outputs.release_body }}
+          #body: ${{ steps.new-release.outputs.release_body }}
           #draft: true
