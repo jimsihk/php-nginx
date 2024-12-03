@@ -1,10 +1,9 @@
-version: '3.5'
 services:
   app:
     image: ${TEST_IMAGE_NAME:-jimsihk/alpine-php-nginx:local}
     build: .
   sut:
-    image: alpine:latest
+    image: ${TEST_IMAGE_NAME:-jimsihk/alpine-php-nginx:local}
     depends_on:
       - app
     command: /tmp/run_tests.sh
