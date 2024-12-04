@@ -46,6 +46,7 @@ jobs:
           DRY_RUN: true
           DEFAULT_BUMP: patch
           RELEASE_BRANCHES: ${{ vars.RELEASE_BRANCHES }}
+          FORCE_WITHOUT_CHANGES: true
 
       - name: Set next version
         id: next_tag_version
