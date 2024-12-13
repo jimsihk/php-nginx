@@ -54,7 +54,7 @@ jobs:
           TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
 
       - name: Run the Anchore scan action for PR
-        uses: anchore/scan-action@v5
+        uses: anchore/scan-action@v6
         id: anchore-scan-pr
         with:
           image: 'docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
