@@ -112,7 +112,7 @@ jobs:
       - name: Get commit SHA of last tag and last commit
         id: get_commit_sha
         run: |
-          LAST_TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
+          LAST_TAG=`git tag --points-at $(git rev-list --tags --max-count=1) | sort | tail -1`
           LAST_TAG_COMMIT=`git rev-list -n 1 $LAST_TAG`
           echo "previous_tag=$LAST_TAG" >> $GITHUB_OUTPUT
           echo "previous_tag_commit=$LAST_TAG_COMMIT" >> $GITHUB_OUTPUT
