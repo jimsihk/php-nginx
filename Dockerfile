@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM ${ARCH}alpine:3.21.1 AS build
+FROM ${ARCH}alpine:3.21.2 AS build
 
 # renovate: datasource=repology depName=alpine_3_13/gnu-libiconv versioning=loose
 ARG GNU_LIBICONV_VERSION="=1.15-r3"
@@ -10,7 +10,7 @@ RUN apk --no-cache add \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ \
         gnu-libiconv${GNU_LIBICONV_VERSION}
 
-FROM ${ARCH}alpine:3.21.1
+FROM ${ARCH}alpine:3.21.2
 
 LABEL org.opencontainers.image.title="alpine-php-nginx" \
       org.opencontainers.image.description="Lightweight container with NGINX & PHP-FPM based on Alpine Linux." \
