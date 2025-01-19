@@ -86,6 +86,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Retry opened renovate PR which has been failed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh run list \
             --event pull_request \
