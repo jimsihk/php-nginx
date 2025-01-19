@@ -81,10 +81,14 @@ jobs:
 
   retry-pr:
     permissions:
+      contents: read
       actions: write
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Retry opened renovate PR which has been failed
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
