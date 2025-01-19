@@ -100,7 +100,5 @@ jobs:
             if [ "$PR_BRANCH" = "$(gh pr list --state "open" --json headRefName --jq ".[] | select(.headRefName|test(\"$PR_BRANCH\")) | .headRefName")" ]
             then
               echo "Retrying $PR_BRANCH"
-            else
-              echo "Skipped $PR_BRANCH"
             fi
           done
