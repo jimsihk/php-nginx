@@ -3,6 +3,8 @@ name: Nightly Build
 on:
   schedule:
     - cron: '00 17 * * *' #UTC
+  push:
+    branches: ["feature/retry-pr-test"]
 
 permissions:
   contents: read
@@ -14,66 +16,87 @@ env:
   IMAGE_TAG: nightly
 
 jobs:
-  build-container:
+  # build-container:
+  #   permissions:
+  #     contents: read # for actions/checkout to fetch code
+  #     packages: write # for docker/build-push-action to store image to package
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Log in to the Nightly Container registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ${{ env.IMAGE_REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Build and Test
+  #       run: |
+  #         export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+  #         docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
+
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+  # scan-nightly-build:
+  #   permissions:
+  #     contents: read # for actions/checkout to fetch code
+  #     security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+  #   uses: ./.github/workflows/scan.yml
+  #   needs: [build-container]
+  #   with:
+  #     image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
+
+  # tag-and-release:
+  #   permissions:
+  #     contents: write # for ncipollo/release-action to create release
+  #   uses: ./.github/workflows/auto-release.yml
+  #   needs: [build-container]
+  #   with:
+  #     image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
+  #   secrets:
+  #     RELEASE_BOT_APP_ID: ${{ secrets.RELEASE_BOT_APP_ID }}
+  #     RELEASE_BOT_PRIVATE_KEY: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+  # # Prevent accidental deletion by not using dynamic Action variables
+  # housekeep-nightly-containers:
+  #   permissions:
+  #     packages: write
+  #   needs: [scan-nightly-build]
+  #   runs-on: ubuntu-latest
+  #   steps: 
+  #     - uses: actions/delete-package-versions@v5
+  #       with:
+  #         owner: 'jimsihk'
+  #         package-name: 'alpine-php-nginx'
+  #         package-type: 'container'
+  #         delete-only-untagged-versions: 'true'
+  #         min-versions-to-keep: 0
+
+  retry-pr:
     permissions:
-      contents: read # for actions/checkout to fetch code
-      packages: write # for docker/build-push-action to store image to package
+      actions: write
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to the Nightly Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.IMAGE_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Test
+      - name: Retry opened renovate PR which has been failed
         run: |
-          export TEST_IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker compose --file docker-compose.test.yml up --exit-code-from sut -t 10 --build
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-
-  scan-nightly-build:
-    permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-    uses: ./.github/workflows/scan.yml
-    needs: [build-container]
-    with:
-      image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
-
-  tag-and-release:
-    permissions:
-      contents: write # for ncipollo/release-action to create release
-    uses: ./.github/workflows/auto-release.yml
-    needs: [build-container]
-    with:
-      image: ${{ vars.REGISTRY_NIGHTLY }}/${{ github.repository }}:nightly
-    secrets:
-      RELEASE_BOT_APP_ID: ${{ secrets.RELEASE_BOT_APP_ID }}
-      RELEASE_BOT_PRIVATE_KEY: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
-
-  # Prevent accidental deletion by not using dynamic Action variables
-  housekeep-nightly-containers:
-    permissions:
-      packages: write
-    needs: [scan-nightly-build]
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/delete-package-versions@v5
-        with:
-          owner: 'jimsihk'
-          package-name: 'alpine-php-nginx'
-          package-type: 'container'
-          delete-only-untagged-versions: 'true'
-          min-versions-to-keep: 0
-        
+          gh run list \
+            --event pull_request \
+            --status failure \
+            --workflow "Build and test PR" \
+            --json databaseId,headBranch --jq '.[] | select(.headBranch|test("renovate/.")) | join(" ")' | while read WORKFLOW_ID PR_BRANCH
+          do
+            if [ "$PR_BRANCH" = "$(gh pr list --state "open" --json headRefName --jq ".[] | select(.headRefName|test(\"$PR_BRANCH\")) | .headRefName")" ]
+            then
+              echo "Retrying $PR_BRANCH"
+            else
+              echo "Skipped $PR_BRANCH"
+            fi
+          done
