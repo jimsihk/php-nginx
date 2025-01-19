@@ -99,6 +99,6 @@ jobs:
           do
             if [ "$PR_BRANCH" = "$(gh pr list --state "open" --json headRefName --jq ".[] | select(.headRefName|test(\"$PR_BRANCH\")) | .headRefName")" ]
             then
-              echo "Retrying $PR_BRANCH"
+              echo "Retrying for $PR_BRANCH"
             fi
           done
