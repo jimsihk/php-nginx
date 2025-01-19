@@ -76,4 +76,29 @@ jobs:
           package-type: 'container'
           delete-only-untagged-versions: 'true'
           min-versions-to-keep: 0
-        
+
+  retry-pr:
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Retry opened renovate PR which has been failed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run list \
+            --event pull_request \
+            --status failure \
+            --workflow "Build and test PR" \
+            --json databaseId,headBranch --jq '.[] | select(.headBranch|test("renovate/.")) | join(" ")' | while read WORKFLOW_ID PR_BRANCH
+          do
+            if [ "$PR_BRANCH" = "$(gh pr list --state "open" --json headRefName --jq ".[] | select(.headRefName|test(\"$PR_BRANCH\")) | .headRefName")" ]
+            then
+              echo "Retrying for $PR_BRANCH"
+            fi
+          done
