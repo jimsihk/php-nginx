@@ -12,6 +12,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   IMAGE_TAG: nightly
+  RETRY_PR_BRANCH_PREFIX: renovate
 
 jobs:
   build-container:
@@ -91,14 +92,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh run list \
-            --event pull_request \
-            --status failure \
-            --workflow "Build and test PR" \
-            --json databaseId,headBranch --jq '.[] | select(.headBranch|test("renovate/.")) | join(" ")' | while read WORKFLOW_ID PR_BRANCH
+          gh pr list --state "open" --json headRefName --jq '.[] | select(.headRefName|test("${{ env.RETRY_PR_BRANCH_PREFIX }}/.")) | .headRefName' | while read PR_BRANCH
           do
-            if [ "$PR_BRANCH" = "$(gh pr list --state "open" --json headRefName --jq ".[] | select(.headRefName|test(\"$PR_BRANCH\")) | .headRefName")" ]
-            then
-              echo "Retrying for $PR_BRANCH"
-            fi
+            gh run list --event pull_request --status failure --workflow "Build and test PR" --branch "$PR_BRANCH" --limit 1 --json databaseId,headBranch --jq '.[] | join(" ")' | while read WORKFLOW_ID WORKFLOW_BRANCH
+            do
+              echo "Retrying for $WORKFLOW_BRANCH"
+              gh run rerun "$WORKFLOW_ID"
+            done
           done
