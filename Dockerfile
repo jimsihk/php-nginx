@@ -134,6 +134,7 @@ ENV client_max_body_size=2M \
     post_max_size=8M \
     upload_max_filesize=2M \
     zlib_output_compression=On \
+    date_timezone=UTC \
     opcache_jit_buffer_size=0 \
     opcache_jit=1235 \
     opcache_memory_consumption=128 \
