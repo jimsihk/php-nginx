@@ -40,7 +40,7 @@ jobs:
           context: .
           push: false
           tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          platforms: ${{ vars.CONTAINER_ARCH }}
+          platforms: linux/riscv64
           provenance: false
 
       - name: Run Trivy vulnerability scanner for PR
